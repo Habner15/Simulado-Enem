@@ -77,6 +77,9 @@ public class Tela {
 	static double botaoLargura;
 	static int botaoAltura;
 	static int tamanho;
+	
+	static ResultSet rSetPerguntas;
+	static ResultSet rSetRespostas;
 
 	public Tela() {	
 		
@@ -265,6 +268,25 @@ public class Tela {
 		
 		
 		
+		painelProva.setLayout(null);
+		painelProva.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30),
+				(int) (minhaLargura / 1.2), (int) (minhaAltura / 1.4));
+		painelProva.setBackground(Color.WHITE);
+		painelProva.setVisible(false);
+		
+		textProva.setBounds((int) (minhaLargura/4.68), minhaAltura/990,  
+				(int) (botaoLargura * 3),(int) botaoAltura * 3);
+		textProva.setEditable(false);
+		textProva.setVisible(true);
+		
+		textProva.setText("TESTE");
+		
+		painelProva.add(textProva);
+		fTela.add(painelProva);
+		
+		
+		
+		
 		painelLogo.add(lLogo);
 		fTela.setVisible(true);
 		acaoComecar();
@@ -357,37 +379,81 @@ public class Tela {
 		btnAvancarParaProva.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				carregaQuestao();
-				
+				//atualisarTelaProva();
+				painelQuantidade.setVisible(false);
 				painelNivel.setVisible(false);
 				painelProva.setVisible(true);
 			}
 		});
 	}
 	
-	static void carregaQuestao() {
+	static void atualisarTelaProva() {
 		try {
-			ConexaoBd bancoDeDados = new ConexaoBd();
+			Statement conexaoComOBanco = conectarComOBancoDeDados();
 			
-			Statement st = bancoDeDados.obterConexao().createStatement();
+			if (rSetPerguntas == null) {
+				rSetPerguntas = obterQuestoes(conexaoComOBanco);
+			}
+			rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conexaoComOBanco);
 			
-			ResultSet rs = st.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE ");
+			textProva.setText(rSetPerguntas.getString(2));
 			
+			checkBoxRespostaA.setText(rSetRespostas.getString(1));
+			rSetRespostas.next();
+			checkBoxRespostaB.setText(rSetRespostas.getString(1));
+			rSetRespostas.next();
+			checkBoxRespostaC.setText(rSetRespostas.getString(1));
+			rSetRespostas.next();
+			checkBoxRespostaD.setText(rSetRespostas.getString(1));
+			rSetRespostas.next();
+			checkBoxRespostaE.setText(rSetRespostas.getString(1));
+			rSetRespostas.next();			
+			
+		} catch (SQLException e) {
+			throw new RuntimeException("Falha ao carregar questões e respostas na tela. Erro: ", e);
+		}
+		
+	}
+	
+	static Statement conectarComOBancoDeDados() {
+		try {
+			ConexaoBd conexaoComOBanco = new ConexaoBd();
+			Statement st = conexaoComOBanco.obterConexao().createStatement();
+			
+			return st;
+		} catch (SQLException e) {
+			throw new RuntimeException("Falha ao solicitar conexão com o banco de dados. Erro: ", e);
+		}
+		
+	}
+	
+	static ResultSet obterQuestoes(Statement conexaoComOBanco) {
+		try {
+			String materiasEscolhidas = verificarMateriasEscolhidas(conexaoComOBanco);
+			
+			ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE " + materiasEscolhidas);
+			
+			return rs;
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questão. Erro: ", e);
 		}
 	}
 	
-	static void carregaResposta() {
-		
+	static ResultSet obterRespostas(String idQuestao, Statement conexaoComOBanco) {
+		try {
+			ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"RESPOSTA\", \"CORRETA\" FROM \"RESPOSTAS\" WHERE \"QUESTAO\" = " + idQuestao);
+			return rs;
+		} catch (SQLException e) {
+			throw new RuntimeException("Falha ao carregar resposta. Erro: ", e);
+		}
 	}
 	
-	static String verificaMateriasEscolhidas(Statement st) {
+	static String verificarMateriasEscolhidas(Statement conexaoComOBanco) {
 		String materiasEscolhidas = "";
 
 		try {
 			if(checkBoxCienciasHumanas.isSelected()) {
-				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%humanas% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%humanas% '");
 				String id = rs.getString(1);
 				materiasEscolhidas = "\"MATERIA\" = " + id + " ";
 			}
@@ -395,7 +461,7 @@ public class Tela {
 				if(materiasEscolhidas.equals("") == false) {
 					materiasEscolhidas = materiasEscolhidas + "AND ";
 				}
-				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%natureza% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%natureza% '");
 				String id = rs.getString(1);
 				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
@@ -403,7 +469,7 @@ public class Tela {
 				if(materiasEscolhidas.equals("") == false) {
 					materiasEscolhidas = materiasEscolhidas + "AND ";
 				}
-				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%linguagens% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%linguagens% '");
 				String id = rs.getString(1);
 				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
@@ -411,7 +477,7 @@ public class Tela {
 				if(materiasEscolhidas.equals("") == false) {
 					materiasEscolhidas = materiasEscolhidas + "AND ";
 				}
-				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%matematica% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%matematica% '");
 				String id = rs.getString(1);
 				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
