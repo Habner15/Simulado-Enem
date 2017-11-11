@@ -296,6 +296,7 @@ public class Tela {
 		acaoVoltarParaMateria();
 		acaoAvancarParaQuantidade();
 		acaoVoltarParaNivel();
+		acaoAvancarParaProva();
 	}
 
 	static void acaoComecar() {
@@ -379,7 +380,7 @@ public class Tela {
 		btnAvancarParaProva.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				atualisarTelaProva();
+				//atualisarTelaProva();
 				painelQuantidade.setVisible(false);
 				painelNivel.setVisible(false);
 				painelProva.setVisible(true);
