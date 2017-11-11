@@ -371,13 +371,57 @@ public class Tela {
 			
 			Statement st = bancoDeDados.obterConexao().createStatement();
 			
-			ResultSet rs = st.executeQuery("");
+			ResultSet rs = st.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE ");
 			
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questão. Erro: ", e);
 		}
 	}
 	
+	static void carregaResposta() {
+		
+	}
+	
+	static String verificaMateriasEscolhidas(Statement st) {
+		String materiasEscolhidas = "";
+
+		try {
+			if(checkBoxCienciasHumanas.isSelected()) {
+				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%humanas% '");
+				String id = rs.getString(1);
+				materiasEscolhidas = "\"MATERIA\" = " + id + " ";
+			}
+			if(checkBoxCienciasDaNatureza.isSelected()) {
+				if(materiasEscolhidas.equals("") == false) {
+					materiasEscolhidas = materiasEscolhidas + "AND ";
+				}
+				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%natureza% '");
+				String id = rs.getString(1);
+				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+			}
+			if(checkBoxLinguagensECodigos.isSelected()) {
+				if(materiasEscolhidas.equals("") == false) {
+					materiasEscolhidas = materiasEscolhidas + "AND ";
+				}
+				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%linguagens% '");
+				String id = rs.getString(1);
+				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+			}
+			if(checkBoxMatematica.isSelected()) {
+				if(materiasEscolhidas.equals("") == false) {
+					materiasEscolhidas = materiasEscolhidas + "AND ";
+				}
+				ResultSet rs = st.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%matematica% '");
+				String id = rs.getString(1);
+				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException("Falha ao procurar materias. Erro: ", e);
+		}
+		return materiasEscolhidas;
+	}
+
 	public static void main(String[] args) {
 		new Tela();
 	}
