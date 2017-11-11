@@ -379,7 +379,7 @@ public class Tela {
 		btnAvancarParaProva.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				//atualisarTelaProva();
+				atualisarTelaProva();
 				painelQuantidade.setVisible(false);
 				painelNivel.setVisible(false);
 				painelProva.setVisible(true);
@@ -459,7 +459,7 @@ public class Tela {
 			}
 			if(checkBoxCienciasDaNatureza.isSelected()) {
 				if(materiasEscolhidas.equals("") == false) {
-					materiasEscolhidas = materiasEscolhidas + "AND ";
+					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%natureza% '");
 				String id = rs.getString(1);
@@ -467,7 +467,7 @@ public class Tela {
 			}
 			if(checkBoxLinguagensECodigos.isSelected()) {
 				if(materiasEscolhidas.equals("") == false) {
-					materiasEscolhidas = materiasEscolhidas + "AND ";
+					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%linguagens% '");
 				String id = rs.getString(1);
@@ -475,7 +475,7 @@ public class Tela {
 			}
 			if(checkBoxMatematica.isSelected()) {
 				if(materiasEscolhidas.equals("") == false) {
-					materiasEscolhidas = materiasEscolhidas + "AND ";
+					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%matematica% '");
 				String id = rs.getString(1);
