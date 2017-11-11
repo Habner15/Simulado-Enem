@@ -11,6 +11,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Tela {
 
@@ -19,29 +26,29 @@ public class Tela {
 	static JLabel lLogo = new JLabel();
 	static ImageIcon imageIcone = new ImageIcon("Imagens\\iconeEnem.jpg");
 	ImageIcon imageLogo = new ImageIcon("Imagens\\logo.png");
-	static JButton btnComecar = new JButton("ComeÁar");
-	static JButton btnRecomecar = new JButton("RecomeÁar");
+	static JButton btnComecar = new JButton("Come√ßar");
+	static JButton btnRecomecar = new JButton("Recome√ßar");
 	
 	
 	static JPanel painelMateria = new JPanel();
 	static JLabel lEscritaMateria = new JLabel("Selecione as Provas Desejadas:");
-	static JCheckBox checkBoxCienciasHumanas = new JCheckBox("CiÍncias Humanas e suas Tecnologias");
-	static JCheckBox checkBoxCienciasDaNatureza = new JCheckBox("CiÍncias da Natureza e suas Tecnologias");
-	static JCheckBox checkBoxLinguagensECodigos = new JCheckBox("Linguagens, CÛdigos e suas Tecnologias");
-	static JCheckBox checkBoxMatematica = new JCheckBox("Matem·tica e suas Tecnologias");
+	static JCheckBox checkBoxCienciasHumanas = new JCheckBox("Ci√™ncias Humanas e suas Tecnologias");
+	static JCheckBox checkBoxCienciasDaNatureza = new JCheckBox("Ci√™ncias da Natureza e suas Tecnologias");
+	static JCheckBox checkBoxLinguagensECodigos = new JCheckBox("Linguagens, C√≥digos e suas Tecnologias");
+	static JCheckBox checkBoxMatematica = new JCheckBox("Matem√°tica e suas Tecnologias");
 	static JButton btnVoltarParaLogo = new JButton("Voltar");
-	static JButton btnAvancarParaNivel = new JButton("AvanÁar");
+	static JButton btnAvancarParaNivel = new JButton("Avan√ßar");
 	
 	static JPanel painelNivel = new JPanel();
-	static JLabel lEscritaNivel = new JLabel("Selecione o NÌvel das Questıes:");
-	static JCheckBox checkBoxFacil = new JCheckBox("F·cil");
-	static JCheckBox checkBoxMedio = new JCheckBox("MÈdio");
-	static JCheckBox checkBoxDificil = new JCheckBox("DifÌcil");
+	static JLabel lEscritaNivel = new JLabel("Selecione o N√≠vel das Quest√µes:");
+	static JCheckBox checkBoxFacil = new JCheckBox("F√°cil");
+	static JCheckBox checkBoxMedio = new JCheckBox("M√©dio");
+	static JCheckBox checkBoxDificil = new JCheckBox("Dif√≠cil");
 	static JButton btnVoltarParaMateria = new JButton("Voltar");
-	static JButton btnAvancarParaQuantidadeQuestao = new JButton("AvanÁar");
+	static JButton btnAvancarParaQuantidadeQuestao = new JButton("Avan√ßar");
 	
 	static JPanel painelQuantidade = new JPanel();
-	static JLabel lEscritaQuantidade = new JLabel("Selecione o Quantidade das Questıes:");
+	static JLabel lEscritaQuantidade = new JLabel("Selecione o Quantidade das Quest√µes:");
 	static JCheckBox checkBoxDez = new JCheckBox("10");
 	static JCheckBox checkBoxVinte = new JCheckBox("20");
 	static JCheckBox checkBoxTrinta = new JCheckBox("30");
@@ -51,9 +58,17 @@ public class Tela {
 	static JCheckBox checkBoxSetenta = new JCheckBox("70");
 	static JCheckBox checkBoxOitenta = new JCheckBox("80");
 	static JCheckBox checkBoxNoventa = new JCheckBox("90");
+	
+	static JPanel painelProva = new JPanel();
+	static JTextArea textProva = new JTextArea();
+	static JCheckBox checkBoxRespostaA = new JCheckBox();
+	static JCheckBox checkBoxRespostaB = new JCheckBox();
+	static JCheckBox checkBoxRespostaC = new JCheckBox();
+	static JCheckBox checkBoxRespostaD = new JCheckBox();
+	static JCheckBox checkBoxRespostaE = new JCheckBox();
 
 	static JButton btnVoltarParaNivel = new JButton("Voltar");
-	static JButton btnAvancarParaProva = new JButton("AvanÁar");
+	static JButton btnAvancarParaProva = new JButton("Avan√ßar");
 
 	static Toolkit kit;
 	static Dimension tamanhoMonitor;
@@ -248,6 +263,8 @@ public class Tela {
 		btnAvancarParaProva.setBackground(Color.WHITE);
 		btnAvancarParaProva.setVisible(true);
 		
+		
+		
 		painelLogo.add(lLogo);
 		fTela.setVisible(true);
 		acaoComecar();
@@ -335,8 +352,63 @@ public class Tela {
 			}
 		});
 	}
+	
+	static void acaoAvancarParaProva() {
+		btnAvancarParaProva.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				carregaQuestao();
+				
+				painelNivel.setVisible(false);
+				painelProva.setVisible(true);
+			}
+		});
+	}
+	
+	static void carregaQuestao() {
+		try {
+			ConexaoBd bancoDeDados = new ConexaoBd();
+			
+			Statement st = bancoDeDados.obterConexao().createStatement();
+			
+			ResultSet rs = st.executeQuery("");
+			
+		} catch (Exception e) {
+			throw new RuntimeException("Falha ao carregar quest√£o. Erro: ", e);
+		}
+	}
+	
 	public static void main(String[] args) {
 		new Tela();
 	}
 
+}
+
+class ConexaoBd {
+	private static final String LOGIN_BANCO_DE_DADOS = "login bd aqui";
+	private static final String SENHA_BANCO_DE_DADOS = "senha aqui";
+	private static final String URL_BANCO_DE_DADOS = "endere√ßo do banco aqui";
+	
+	private Connection conexaoBd;
+	
+	public ConexaoBd() {
+		try {
+			conexaoBd = DriverManager.getConnection(URL_BANCO_DE_DADOS, LOGIN_BANCO_DE_DADOS, SENHA_BANCO_DE_DADOS);
+		} catch (SQLException e){
+			throw new RuntimeException("Falha ao conectar com o banco. Erro: ", e);
+		}
+	}
+	
+	public Connection obterConexao() {
+		return conexaoBd;
+	}
+	
+	public void fecharConexao() {
+		try {
+			conexaoBd.close();
+		} catch (SQLException e) {
+			throw new RuntimeException("Falha ao desconectar o banco. Erro: ", e);
+		}
+	}
+	
 }
