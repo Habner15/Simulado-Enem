@@ -279,7 +279,6 @@ public class Tela {
 		textProva.setEditable(false);
 		textProva.setVisible(true);
 		
-		textProva.setText("TESTE");
 		
 		painelProva.add(textProva);
 		fTela.add(painelProva);
@@ -380,7 +379,7 @@ public class Tela {
 		btnAvancarParaProva.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				//atualisarTelaProva();
+				atualisarTelaProva();
 				painelQuantidade.setVisible(false);
 				painelNivel.setVisible(false);
 				painelProva.setVisible(true);
@@ -394,22 +393,29 @@ public class Tela {
 			
 			if (rSetPerguntas == null) {
 				rSetPerguntas = obterQuestoes(conexaoComOBanco);
+				if(!rSetPerguntas.next()) {
+					throw new RuntimeException("Nao foi recebida nenhuma questao do banco de dados");
+				}
 			}
-			rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conexaoComOBanco);
+			rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
 			
 			textProva.setText(rSetPerguntas.getString(2));
 			
-			checkBoxRespostaA.setText(rSetRespostas.getString(1));
-			rSetRespostas.next();
-			checkBoxRespostaB.setText(rSetRespostas.getString(1));
-			rSetRespostas.next();
-			checkBoxRespostaC.setText(rSetRespostas.getString(1));
-			rSetRespostas.next();
-			checkBoxRespostaD.setText(rSetRespostas.getString(1));
-			rSetRespostas.next();
-			checkBoxRespostaE.setText(rSetRespostas.getString(1));
-			rSetRespostas.next();			
+			JCheckBox[] alternativa = new JCheckBox[5];
+			alternativa[0] = checkBoxRespostaA;
+			alternativa[1] = checkBoxRespostaB;
+			alternativa[2] = checkBoxRespostaC;
+			alternativa[3] = checkBoxRespostaD;
+			alternativa[4] = checkBoxRespostaE;
 			
+			
+			for(int i = 0; i < alternativa.length; i++) {
+				if(rSetRespostas.next()) {
+					alternativa[i].setText(rSetRespostas.getString(1));
+				} else {
+					throw new RuntimeException("Numero de respostas recebidas menor que 5");
+				}
+			}
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questões e respostas na tela. Erro: ", e);
 		}
@@ -432,9 +438,13 @@ public class Tela {
 		try {
 			String materiasEscolhidas = verificarMateriasEscolhidas(conexaoComOBanco);
 			
-			ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE " + materiasEscolhidas);
+			if(materiasEscolhidas.equals("")) {
+				throw new RuntimeException("Nenhuma materia escolhida");
+			} else {
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE " + materiasEscolhidas);
+				return rs;
+			}
 			
-			return rs;
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questão. Erro: ", e);
 		}
@@ -454,7 +464,7 @@ public class Tela {
 
 		try {
 			if(checkBoxCienciasHumanas.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%humanas% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%'");
 				String id = rs.getString(1);
 				materiasEscolhidas = "\"MATERIA\" = " + id + " ";
 			}
@@ -462,7 +472,7 @@ public class Tela {
 				if(materiasEscolhidas.equals("") == false) {
 					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%natureza% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%'");
 				String id = rs.getString(1);
 				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
@@ -470,7 +480,7 @@ public class Tela {
 				if(materiasEscolhidas.equals("") == false) {
 					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%linguagens% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%'");
 				String id = rs.getString(1);
 				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
@@ -478,7 +488,8 @@ public class Tela {
 				if(materiasEscolhidas.equals("") == false) {
 					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%matematica% '");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%'");
+				rs.next();
 				String id = rs.getString(1);
 				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
