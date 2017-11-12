@@ -358,7 +358,7 @@ public class Enem {
 		});
 	}
 
-	static void atualisarTelaProva() {
+	static void atualizarTelaProva() {
 		try {
 			Statement conexaoComOBanco = conectarComOBancoDeDados();
 			
