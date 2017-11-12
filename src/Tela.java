@@ -279,8 +279,23 @@ public class Tela {
 		textProva.setEditable(false);
 		textProva.setVisible(true);
 		
+		checkBoxRespostaA.setBounds(200, 150, 500, 50);
+		checkBoxRespostaA.setVisible(true);
+		checkBoxRespostaB.setBounds(200, 250, 500, 50);
+		checkBoxRespostaB.setVisible(true);
+		checkBoxRespostaC.setBounds(200, 350, 500, 50);
+		checkBoxRespostaC.setVisible(true);
+		checkBoxRespostaD.setBounds(200, 450, 500, 50);
+		checkBoxRespostaD.setVisible(true);
+		checkBoxRespostaE.setBounds(200, 550, 500, 50);
+		checkBoxRespostaE.setVisible(true);
 		
 		painelProva.add(textProva);
+		painelProva.add(checkBoxRespostaA);
+		painelProva.add(checkBoxRespostaB);
+		painelProva.add(checkBoxRespostaC);
+		painelProva.add(checkBoxRespostaD);
+		painelProva.add(checkBoxRespostaE);
 		fTela.add(painelProva);
 		
 		
@@ -408,7 +423,6 @@ public class Tela {
 			alternativa[3] = checkBoxRespostaD;
 			alternativa[4] = checkBoxRespostaE;
 			
-			
 			for(int i = 0; i < alternativa.length; i++) {
 				if(rSetRespostas.next()) {
 					alternativa[i].setText(rSetRespostas.getString(1));
@@ -416,6 +430,7 @@ public class Tela {
 					throw new RuntimeException("Numero de respostas recebidas menor que 5");
 				}
 			}
+			rSetPerguntas.next();
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questões e respostas na tela. Erro: ", e);
 		}
@@ -507,9 +522,9 @@ public class Tela {
 }
 
 class ConexaoBd {
-	private static final String LOGIN_BANCO_DE_DADOS = "login bd aqui";
-	private static final String SENHA_BANCO_DE_DADOS = "senha aqui";
-	private static final String URL_BANCO_DE_DADOS = "endereço do banco aqui";
+	private static final String LOGIN_BANCO_DE_DADOS = "postgres";
+	private static final String SENHA_BANCO_DE_DADOS = "123";
+	private static final String URL_BANCO_DE_DADOS = "jdbc:postgresql://localhost/testeenem";
 	
 	private Connection conexaoBd;
 	
