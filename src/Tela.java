@@ -408,33 +408,33 @@ public class Tela {
 			
 			if (rSetPerguntas == null) {
 				rSetPerguntas = obterQuestoes(conexaoComOBanco);
-				if(!rSetPerguntas.next()) {
-					throw new RuntimeException("Nao foi recebida nenhuma questao do banco de dados");
-				}
 			}
-			rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
-			
-			textProva.setText(rSetPerguntas.getString(2));
-			
-			JCheckBox[] alternativa = new JCheckBox[5];
-			alternativa[0] = checkBoxRespostaA;
-			alternativa[1] = checkBoxRespostaB;
-			alternativa[2] = checkBoxRespostaC;
-			alternativa[3] = checkBoxRespostaD;
-			alternativa[4] = checkBoxRespostaE;
-			
-			for(int i = 0; i < alternativa.length; i++) {
-				if(rSetRespostas.next()) {
-					alternativa[i].setText(rSetRespostas.getString(1));
-				} else {
-					throw new RuntimeException("Numero de respostas recebidas menor que 5");
+			if(rSetPerguntas.next()) {
+				rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
+				
+				textProva.setText(rSetPerguntas.getString(2));
+				
+				JCheckBox[] alternativa = new JCheckBox[5];
+				alternativa[0] = checkBoxRespostaA;
+				alternativa[1] = checkBoxRespostaB;
+				alternativa[2] = checkBoxRespostaC;
+				alternativa[3] = checkBoxRespostaD;
+				alternativa[4] = checkBoxRespostaE;
+				
+				for(int i = 0; i < alternativa.length; i++) {
+					if(rSetRespostas.next()) {
+						alternativa[i].setText(rSetRespostas.getString(1));
+					} else {
+						throw new RuntimeException("Numero de respostas recebidas menor que 5");
+					}
 				}
+			} else {
+				throw new RuntimeException("Numero insuficiente de questões recebidas do banco");
 			}
-			rSetPerguntas.next();
+			
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questões e respostas na tela. Erro: ", e);
 		}
-		
 	}
 	
 	static Statement conectarComOBancoDeDados() {
@@ -454,7 +454,7 @@ public class Tela {
 			String materiasEscolhidas = verificarMateriasEscolhidas(conexaoComOBanco);
 			
 			if(materiasEscolhidas.equals("")) {
-				throw new RuntimeException("Nenhuma materia escolhida");
+				throw new RuntimeException("Nenhuma materia recebida");
 			} else {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE " + materiasEscolhidas);
 				return rs;
@@ -480,37 +480,44 @@ public class Tela {
 		try {
 			if(checkBoxCienciasHumanas.isSelected()) {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%'");
-				String id = rs.getString(1);
-				materiasEscolhidas = "\"MATERIA\" = " + id + " ";
+				if(rs.next()) {
+					String id = rs.getString(1);
+					materiasEscolhidas = "\"MATERIA\" = " + id + " ";
+				}
 			}
 			if(checkBoxCienciasDaNatureza.isSelected()) {
-				if(materiasEscolhidas.equals("") == false) {
-					materiasEscolhidas = materiasEscolhidas + "OR ";
-				}
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%'");
-				String id = rs.getString(1);
-				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				if(rs.next()) {
+					if(materiasEscolhidas.equals("") == false) {
+						materiasEscolhidas = materiasEscolhidas + "OR ";
+					}
+					String id = rs.getString(1);
+					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				}
 			}
 			if(checkBoxLinguagensECodigos.isSelected()) {
-				if(materiasEscolhidas.equals("") == false) {
-					materiasEscolhidas = materiasEscolhidas + "OR ";
-				}
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%'");
-				String id = rs.getString(1);
-				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				if(rs.next()) {
+					if(materiasEscolhidas.equals("") == false) {
+						materiasEscolhidas = materiasEscolhidas + "OR ";
+					}
+					String id = rs.getString(1);
+					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				}
 			}
 			if(checkBoxMatematica.isSelected()) {
-				if(materiasEscolhidas.equals("") == false) {
-					materiasEscolhidas = materiasEscolhidas + "OR ";
-				}
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%'");
-				rs.next();
-				String id = rs.getString(1);
-				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				if(rs.next()) {
+					if(materiasEscolhidas.equals("") == false) {
+						materiasEscolhidas = materiasEscolhidas + "OR ";
+					}
+					String id = rs.getString(1);
+					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				}
 			}
 			
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao procurar materias. Erro: ", e);
+			throw new RuntimeException("Falha ao procurar materias. Verifique o banco de dados ", e);
 		}
 		return materiasEscolhidas;
 	}
