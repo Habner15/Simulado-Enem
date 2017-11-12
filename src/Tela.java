@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,36 +18,40 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Tela {
+public class Enem {
 
 	static JFrame fTela = new JFrame("Simulado Enem");
-	static JPanel painelLogo = new JPanel();
-	static JLabel lLogo = new JLabel();
-	static ImageIcon imageIcone = new ImageIcon("Imagens\\iconeEnem.jpg");
-	ImageIcon imageLogo = new ImageIcon("Imagens\\logo.png");
-	static JButton btnComecar = new JButton("Começar");
-	static JButton btnRecomecar = new JButton("Recomeçar");
-	
-	
+
+	static JPanel painelInicial = new JPanel();
 	static JPanel painelMateria = new JPanel();
+	static JPanel painelNivel = new JPanel();
+	static JPanel painelQuantidade = new JPanel();
+	static JPanel painelProva = new JPanel();
+
+	static JLabel lLogo = new JLabel();
 	static JLabel lEscritaMateria = new JLabel("Selecione as Provas Desejadas:");
+	static JLabel lEscritaNivel = new JLabel("Selecione o Nível das Questões:");
+	static JLabel lEscritaQuantidade = new JLabel("Selecione o Quantidade das Questões:");
+
+	static ImageIcon imageIcone = new ImageIcon("Imagens\\iconeEnem.jpg");
+	static ImageIcon imageLogo = new ImageIcon("Imagens\\logo.png");
+
+	static JButton btnVoltarParaLogo = new JButton("Voltar");
+	static JButton btnAvancarParaMateria = new JButton("Iniciar");
+	static JButton btnVoltarParaMateria = new JButton("Voltar");
+	static JButton btnAvancarParaNivel = new JButton("Avançar");
+	static JButton btnVoltarParaNivel = new JButton("Voltar");
+	static JButton btnAvancarParaQuantidade = new JButton("Avançar");
+	static JButton btnVoltarParaQuantidade = new JButton("Voltar");
+	static JButton btnAvancarParaProva = new JButton("Avançar");
+
 	static JCheckBox checkBoxCienciasHumanas = new JCheckBox("Ciências Humanas e suas Tecnologias");
 	static JCheckBox checkBoxCienciasDaNatureza = new JCheckBox("Ciências da Natureza e suas Tecnologias");
 	static JCheckBox checkBoxLinguagensECodigos = new JCheckBox("Linguagens, Códigos e suas Tecnologias");
 	static JCheckBox checkBoxMatematica = new JCheckBox("Matemática e suas Tecnologias");
-	static JButton btnVoltarParaLogo = new JButton("Voltar");
-	static JButton btnAvancarParaNivel = new JButton("Avançar");
-	
-	static JPanel painelNivel = new JPanel();
-	static JLabel lEscritaNivel = new JLabel("Selecione o Nível das Questões:");
 	static JCheckBox checkBoxFacil = new JCheckBox("Fácil");
 	static JCheckBox checkBoxMedio = new JCheckBox("Médio");
 	static JCheckBox checkBoxDificil = new JCheckBox("Difícil");
-	static JButton btnVoltarParaMateria = new JButton("Voltar");
-	static JButton btnAvancarParaQuantidadeQuestao = new JButton("Avançar");
-	
-	static JPanel painelQuantidade = new JPanel();
-	static JLabel lEscritaQuantidade = new JLabel("Selecione o Quantidade das Questões:");
 	static JCheckBox checkBoxDez = new JCheckBox("10");
 	static JCheckBox checkBoxVinte = new JCheckBox("20");
 	static JCheckBox checkBoxTrinta = new JCheckBox("30");
@@ -58,31 +61,40 @@ public class Tela {
 	static JCheckBox checkBoxSetenta = new JCheckBox("70");
 	static JCheckBox checkBoxOitenta = new JCheckBox("80");
 	static JCheckBox checkBoxNoventa = new JCheckBox("90");
-	
-	static JPanel painelProva = new JPanel();
-	static JTextArea textProva = new JTextArea();
 	static JCheckBox checkBoxRespostaA = new JCheckBox();
 	static JCheckBox checkBoxRespostaB = new JCheckBox();
 	static JCheckBox checkBoxRespostaC = new JCheckBox();
 	static JCheckBox checkBoxRespostaD = new JCheckBox();
 	static JCheckBox checkBoxRespostaE = new JCheckBox();
 
-	static JButton btnVoltarParaNivel = new JButton("Voltar");
-	static JButton btnAvancarParaProva = new JButton("Avançar");
+	static JTextArea textProva = new JTextArea();
 
 	static Toolkit kit;
 	static Dimension tamanhoMonitor;
 	static int minhaLargura;
 	static int minhaAltura;
-	static double botaoLargura;
 	static int botaoAltura;
 	static int tamanho;
+	static double botaoLargura;
 	
 	static ResultSet rSetPerguntas;
 	static ResultSet rSetRespostas;
 
-	public Tela() {	
-		
+	public Enem() {
+
+		// Configurações do Frame
+
+		fTela.add(painelInicial);
+		fTela.setIconImage(imageIcone.getImage());
+		fTela.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
+		fTela.getContentPane().setBackground(Color.lightGray);
+		fTela.setTitle("Simulado Enem");
+		fTela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		fTela.setLayout(null);
+		fTela.setVisible(true);
+
+		// Configurações de resolução
+
 		kit = Toolkit.getDefaultToolkit();
 		tamanhoMonitor = kit.getScreenSize();
 		minhaLargura = tamanhoMonitor.width;
@@ -91,350 +103,294 @@ public class Tela {
 		botaoAltura = minhaAltura / 15;
 		tamanho = minhaLargura * minhaAltura / 60000;
 
-		fTela.setIconImage(imageIcone.getImage());// icone da tela
-		fTela.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
-		fTela.setLayout(null);
+		// Configurações do Painel Logo
 
-		fTela.add(btnComecar);
-		btnComecar.setBounds((int) (minhaLargura / 2.69),
-				(int) (minhaAltura / 1.3), (int) botaoLargura, botaoAltura);
-		btnComecar.setFont(new Font("Cambria", Font.BOLD, tamanho));
-		btnComecar.setBackground(Color.WHITE);
-		btnComecar.setVisible(true);
-		
-		fTela.add(btnRecomecar);
-		btnRecomecar.setBounds((int) (minhaLargura / 2.69),
-				(int) (minhaAltura / 1.3), (int) botaoLargura, botaoAltura);
-		btnRecomecar.setFont(new Font("Cambria", Font.BOLD, tamanho));
-		btnRecomecar.setBackground(Color.WHITE);
-		btnRecomecar.setVisible(false);
-		
-		
-		
-		fTela.add(painelLogo);
-		painelLogo.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30),
-				(int) (minhaLargura / 1.2), (int) (minhaAltura / 1.4));
-		painelLogo.setBackground(Color.WHITE);
-		painelLogo.setVisible(true);
 		lLogo.setIcon(imageLogo);
-		
-		
-		
-		fTela.add(painelMateria);
-		painelMateria.setLayout(null);
-		painelMateria.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30),
-				(int) (minhaLargura / 1.2), (int) (minhaAltura / 1.4));
-		painelMateria.setBackground(Color.WHITE);
-		painelMateria.setVisible(false);
-		
-		painelMateria.add(lEscritaMateria);
-		lEscritaMateria.setBounds((int) (minhaLargura/4.1), minhaAltura/990,  
-				(int) (botaoLargura * 3),(int) botaoAltura * 3);
-		lEscritaMateria.setFont(new Font("Arial", Font.BOLD, (int) ((int) tamanho*1.5)));
+		painelInicial.add(lLogo);
+		painelInicial.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+				(int) (minhaAltura / 1.4));
+		painelInicial.setBackground(Color.WHITE);
+		painelInicial.setVisible(true);
+
+		// Botões
+
+		fTela.add(btnAvancarParaMateria).setBounds((int) (minhaLargura / 2.69), (int) (minhaAltura / 1.3),
+				(int) botaoLargura, botaoAltura);
+
+		Botoes();
+
+	}
+
+	public static void Materia() {
+
+		// Label
+
+		painelMateria.add(lEscritaMateria).setBounds((int) (minhaLargura / 4.1), minhaAltura / 990,
+				(int) (botaoLargura * 3), (int) botaoAltura * 3);
 		lEscritaMateria.setForeground(new Color(30, 50, 100));
-		lEscritaMateria.setVisible(true);
-		
-		painelMateria.add(checkBoxCienciasHumanas);
-		checkBoxCienciasHumanas.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxCienciasHumanas.setBounds((int) (minhaLargura/3.42),minhaAltura/5,(int)((int) botaoLargura/1.01), (tamanho));
-		
-		painelMateria.add(checkBoxCienciasDaNatureza);
-		checkBoxCienciasDaNatureza.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxCienciasDaNatureza.setBounds((int) (minhaLargura/3.42),(int) (minhaAltura/3.75),(int)((int) botaoLargura/0.95), (tamanho));
-		
-		painelMateria.add(checkBoxLinguagensECodigos);
-		checkBoxLinguagensECodigos.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxLinguagensECodigos.setBounds((int) (minhaLargura/3.42),minhaAltura/3,(int)((int) botaoLargura/0.96), (tamanho));
 
-		painelMateria.add(checkBoxMatematica);
-		checkBoxMatematica.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxMatematica.setBounds((int) (minhaLargura/3.42),(int) (minhaAltura/2.5),(int)((int) botaoLargura/1.2), (tamanho));
+		// CheckBox
 
-		painelMateria.add(btnVoltarParaLogo);
-		btnVoltarParaLogo.setBounds(minhaLargura/13,(int) (minhaAltura/1.8),(int) botaoLargura,botaoAltura);
-		btnVoltarParaLogo.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
-		btnVoltarParaLogo.setBackground(Color.WHITE);
-		btnVoltarParaLogo.setVisible(true);
-		
-		painelMateria.add(btnAvancarParaNivel);
-		btnAvancarParaNivel.setBounds(minhaLargura/2,(int) (minhaAltura/1.8),(int) botaoLargura,botaoAltura);
-		btnAvancarParaNivel.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
-		btnAvancarParaNivel.setBackground(Color.WHITE);
-		btnAvancarParaNivel.setVisible(true);
-		
-		
-		fTela.add(painelNivel);
-		painelNivel.setLayout(null);
-		painelNivel.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30),
-				(int) (minhaLargura / 1.2), (int) (minhaAltura / 1.4));
-		painelNivel.setBackground(Color.WHITE);
-		painelNivel.setVisible(false);
-		
-		painelNivel.add(lEscritaNivel);
-		lEscritaNivel.setBounds((int) (minhaLargura/4.1), minhaAltura/990,  
-				(int) (botaoLargura * 3),(int) botaoAltura * 3);
-		lEscritaNivel.setFont(new Font("Arial", Font.BOLD, (int) ((int) tamanho*1.5)));
+		painelMateria.add(checkBoxCienciasHumanas).setBounds((int) (minhaLargura / 3.42), minhaAltura / 5,
+				(int) ((int) botaoLargura / 1.01), (tamanho));
+		painelMateria.add(checkBoxCienciasDaNatureza).setBounds((int) (minhaLargura / 3.42), (int) (minhaAltura / 3.75),
+				(int) ((int) botaoLargura / 0.95), (tamanho));
+		painelMateria.add(checkBoxLinguagensECodigos).setBounds((int) (minhaLargura / 3.42), minhaAltura / 3,
+				(int) ((int) botaoLargura / 0.96), (tamanho));
+		painelMateria.add(checkBoxMatematica).setBounds((int) (minhaLargura / 3.42), (int) (minhaAltura / 2.5),
+				(int) ((int) botaoLargura / 1.2), (tamanho));
+
+		// Botões
+
+		painelMateria.add(btnVoltarParaLogo).setBounds(minhaLargura / 13, (int) (minhaAltura / 1.8), (int) botaoLargura,
+				botaoAltura);
+		painelMateria.add(btnAvancarParaNivel).setBounds(minhaLargura / 2, (int) (minhaAltura / 1.8),
+				(int) botaoLargura, botaoAltura);
+
+		// Configurações do Painel Materia
+
+		painelMateria.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+				(int) (minhaAltura / 1.4));
+		painelMateria.setBackground(Color.WHITE);
+		painelMateria.setLayout(null);
+		painelMateria.setVisible(true);
+
+		// Configurações do Frame
+
+		fTela.add(painelMateria);
+
+		Botoes();
+
+	}
+
+	public static void Nivel() {
+
+		// Label
+
+		painelNivel.add(lEscritaNivel).setBounds((int) (minhaLargura / 4.1), minhaAltura / 990,
+				(int) (botaoLargura * 3), (int) botaoAltura * 3);
 		lEscritaNivel.setForeground(new Color(30, 50, 100));
-		lEscritaNivel.setVisible(true);
-		
-		painelNivel.add(checkBoxFacil);
-		checkBoxFacil.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxFacil.setBounds((int) (minhaLargura/2.57),(int) (minhaAltura/4.2),(int)((int) botaoLargura/5.5), (tamanho));
-		
-		painelNivel.add(checkBoxMedio);
-		checkBoxMedio.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxMedio.setBounds((int) (minhaLargura/2.57),(int) (minhaAltura/3.2),(int)((int) botaoLargura/4.5), (tamanho));
 
-		painelNivel.add(checkBoxDificil);
-		checkBoxDificil.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxDificil.setBounds((int) (minhaLargura/2.57),(int) (minhaAltura/2.6),(int)((int) botaoLargura/4.5), (tamanho));
+		// CheckBox
 
-		painelNivel.add(btnVoltarParaMateria);
-		btnVoltarParaMateria.setBounds(minhaLargura/13,(int) (minhaAltura/1.8),(int) botaoLargura,botaoAltura);
-		btnVoltarParaMateria.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
-		btnVoltarParaMateria.setBackground(Color.WHITE);
-		btnVoltarParaMateria.setVisible(true);
-		
-		painelNivel.add(btnAvancarParaQuantidadeQuestao);
-		btnAvancarParaQuantidadeQuestao.setBounds(minhaLargura/2,(int) (minhaAltura/1.8),(int) botaoLargura,botaoAltura);
-		btnAvancarParaQuantidadeQuestao.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
-		btnAvancarParaQuantidadeQuestao.setBackground(Color.WHITE);
-		btnAvancarParaQuantidadeQuestao.setVisible(true);
-		
-		
-		
-		
-		fTela.add(painelQuantidade);
-		painelQuantidade.setLayout(null);
-		painelQuantidade.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30),
-				(int) (minhaLargura / 1.2), (int) (minhaAltura / 1.4));
-		painelQuantidade.setBackground(Color.WHITE);
-		painelQuantidade.setVisible(false);
-		
-		painelQuantidade.add(lEscritaQuantidade);
-		lEscritaQuantidade.setBounds((int) (minhaLargura/4.68), minhaAltura/990,  
-				(int) (botaoLargura * 3),(int) botaoAltura * 3);
-		lEscritaQuantidade.setFont(new Font("Arial", Font.BOLD, (int) ((int) tamanho*1.5)));
+		painelNivel.add(checkBoxFacil).setBounds((int) (minhaLargura / 2.57), (int) (minhaAltura / 4.2),
+				(int) ((int) botaoLargura / 5.5), (tamanho));
+		painelNivel.add(checkBoxMedio).setBounds((int) (minhaLargura / 2.57), (int) (minhaAltura / 3.2),
+				(int) ((int) botaoLargura / 4.5), (tamanho));
+		painelNivel.add(checkBoxDificil).setBounds((int) (minhaLargura / 2.57), (int) (minhaAltura / 2.6),
+				(int) ((int) botaoLargura / 4.5), (tamanho));
+
+		// Botões
+
+		painelNivel.add(btnVoltarParaMateria).setBounds(minhaLargura / 13, (int) (minhaAltura / 1.8),
+				(int) botaoLargura, botaoAltura);
+		painelNivel.add(btnAvancarParaQuantidade).setBounds(minhaLargura / 2, (int) (minhaAltura / 1.8),
+				(int) botaoLargura, botaoAltura);
+
+		// Configurações Painel Nivel
+
+		painelNivel.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+				(int) (minhaAltura / 1.4));
+		painelNivel.setBackground(Color.WHITE);
+		painelNivel.setLayout(null);
+		painelNivel.setVisible(true);
+
+		// Configurações do Frame
+
+		fTela.add(painelNivel);
+
+		Botoes();
+
+	}
+
+	public static void Quantidade() {
+
+		// Label
+
+		painelQuantidade.add(lEscritaQuantidade).setBounds((int) (minhaLargura / 4.68), minhaAltura / 990,
+				(int) (botaoLargura * 3), (int) botaoAltura * 3);
 		lEscritaQuantidade.setForeground(new Color(30, 50, 100));
-		lEscritaQuantidade.setVisible(true);
-		
-		painelQuantidade.add(checkBoxDez);
-		checkBoxDez.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxDez.setBounds((int) (minhaLargura/3.3),(int) (minhaAltura/4.7),((int) botaoLargura/8), (tamanho));
-		
-		painelQuantidade.add(checkBoxVinte);
-		checkBoxVinte.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxVinte.setBounds((int) (minhaLargura/3.3),(int) (minhaAltura/3.2),((int) botaoLargura/8), (tamanho));
 
-		painelQuantidade.add(checkBoxTrinta);
-		checkBoxTrinta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxTrinta.setBounds((int) (minhaLargura/3.3),(int) (minhaAltura/2.44),((int) botaoLargura/8), (tamanho));
-		
-		painelQuantidade.add(checkBoxQuarenta);
-		checkBoxQuarenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxQuarenta.setBounds((int) (minhaLargura/2.49),(int) (minhaAltura/4.7),((int) botaoLargura/8), (tamanho));
-		
-		painelQuantidade.add(checkBoxCinquenta);
-		checkBoxCinquenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxCinquenta.setBounds((int) (minhaLargura/2.49),(int) (minhaAltura/3.2),((int) botaoLargura/8), (tamanho));
+		// CheckBox
 
-		painelQuantidade.add(checkBoxSessenta);
-		checkBoxSessenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxSessenta.setBounds((int) (minhaLargura/2.49),(int) (minhaAltura/2.44),((int) botaoLargura/8), (tamanho));
-		
-		painelQuantidade.add(checkBoxSetenta);
-		checkBoxSetenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxSetenta.setBounds((minhaLargura/2),(int) (minhaAltura/4.7),((int) botaoLargura/8), (tamanho));
-		
-		painelQuantidade.add(checkBoxOitenta);
-		checkBoxOitenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxOitenta.setBounds((minhaLargura/2),(int) (minhaAltura/3.2),((int) botaoLargura/8), (tamanho));
+		painelQuantidade.add(checkBoxDez).setBounds((int) (minhaLargura / 3.3), (int) (minhaAltura / 4.7),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxVinte).setBounds((int) (minhaLargura / 3.3), (int) (minhaAltura / 3.2),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxTrinta).setBounds((int) (minhaLargura / 3.3), (int) (minhaAltura / 2.44),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxQuarenta).setBounds((int) (minhaLargura / 2.49), (int) (minhaAltura / 4.7),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxCinquenta).setBounds((int) (minhaLargura / 2.49), (int) (minhaAltura / 3.2),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxSessenta).setBounds((int) (minhaLargura / 2.49), (int) (minhaAltura / 2.44),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxSetenta).setBounds((minhaLargura / 2), (int) (minhaAltura / 4.7),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxOitenta).setBounds((minhaLargura / 2), (int) (minhaAltura / 3.2),
+				((int) botaoLargura / 8), (tamanho));
+		painelQuantidade.add(checkBoxNoventa).setBounds((minhaLargura / 2), (int) (minhaAltura / 2.44),
+				((int) botaoLargura / 8), (tamanho));
 
-		painelQuantidade.add(checkBoxNoventa);
-		checkBoxNoventa.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
-		checkBoxNoventa.setBounds((minhaLargura/2),(int) (minhaAltura/2.44),((int) botaoLargura/8), (tamanho));
+		// Botões
 
-		painelQuantidade.add(btnVoltarParaNivel);
-		btnVoltarParaNivel.setBounds(minhaLargura/13,(int) (minhaAltura/1.8),(int) botaoLargura,botaoAltura);
-		btnVoltarParaNivel.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
-		btnVoltarParaNivel.setBackground(Color.WHITE);
-		btnVoltarParaNivel.setVisible(true);
-		
-		painelQuantidade.add(btnAvancarParaProva);
-		btnAvancarParaProva.setBounds(minhaLargura/2,(int) (minhaAltura/1.8),(int) botaoLargura,botaoAltura);
-		btnAvancarParaProva.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
-		btnAvancarParaProva.setBackground(Color.WHITE);
-		btnAvancarParaProva.setVisible(true);
-		
-		
-		
-		painelProva.setLayout(null);
-		painelProva.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30),
-				(int) (minhaLargura / 1.2), (int) (minhaAltura / 1.4));
-		painelProva.setBackground(Color.WHITE);
-		painelProva.setVisible(false);
-		
-		textProva.setBounds((int) (minhaLargura/4.68), minhaAltura/990,  
-				(int) (botaoLargura * 3),(int) botaoAltura * 3);
+		painelQuantidade.add(btnVoltarParaNivel).setBounds(minhaLargura / 13, (int) (minhaAltura / 1.8),
+				(int) botaoLargura, botaoAltura);
+		painelQuantidade.add(btnAvancarParaProva).setBounds(minhaLargura / 2, (int) (minhaAltura / 1.8),
+				(int) botaoLargura, botaoAltura);
+
+		// Configurações Painel Quantidade
+
+		painelQuantidade.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+				(int) (minhaAltura / 1.4));
+		painelQuantidade.setBackground(Color.WHITE);
+		painelQuantidade.setLayout(null);
+		painelQuantidade.setVisible(true);
+
+		// Configurações do Frame
+
+		fTela.add(painelQuantidade);
+
+		Botoes();
+
+	}
+
+	public static void Prova() {
+
+		// Label
+		painelProva.add(textProva).setBounds((int) (minhaLargura / 4.68), minhaAltura / 990, (int) (botaoLargura * 3),
+				(int) botaoAltura * 3);
 		textProva.setEditable(false);
-		textProva.setVisible(true);
-		
-		checkBoxRespostaA.setBounds(200, 150, 500, 50);
-		checkBoxRespostaA.setVisible(true);
-		checkBoxRespostaB.setBounds(200, 250, 500, 50);
-		checkBoxRespostaB.setVisible(true);
-		checkBoxRespostaC.setBounds(200, 350, 500, 50);
-		checkBoxRespostaC.setVisible(true);
-		checkBoxRespostaD.setBounds(200, 450, 500, 50);
-		checkBoxRespostaD.setVisible(true);
-		checkBoxRespostaE.setBounds(200, 550, 500, 50);
-		checkBoxRespostaE.setVisible(true);
-		
-		painelProva.add(textProva);
-		painelProva.add(checkBoxRespostaA);
-		painelProva.add(checkBoxRespostaB);
-		painelProva.add(checkBoxRespostaC);
-		painelProva.add(checkBoxRespostaD);
-		painelProva.add(checkBoxRespostaE);
+
+		// CheckBox
+
+		painelProva.add(checkBoxRespostaA).setBounds(200, 150, 500, 50);
+		painelProva.add(checkBoxRespostaB).setBounds(200, 250, 500, 50);
+		painelProva.add(checkBoxRespostaC).setBounds(200, 350, 500, 50);
+		painelProva.add(checkBoxRespostaD).setBounds(200, 450, 500, 50);
+		painelProva.add(checkBoxRespostaE).setBounds(200, 550, 500, 50);
+
+		// Botoes
+
+		// Configurações da Prova
+
+		painelProva.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+				(int) (minhaAltura / 1.4));
+		painelProva.setBackground(Color.WHITE);
+		painelProva.setLayout(null);
+		painelProva.setVisible(true);
+
+		// Configurações do Frame
+
 		fTela.add(painelProva);
 		
-		
-		
-		
-		painelLogo.add(lLogo);
-		fTela.setVisible(true);
-		acaoComecar();
-		acaoRecomecar();
-		acaoVoltarParaLogo();
-		acaoAvancarParaNivel();
-		acaoVoltarParaMateria();
-		acaoAvancarParaQuantidade();
-		acaoVoltarParaNivel();
-		acaoAvancarParaProva();
+		Botoes();
+
 	}
 
-	static void acaoComecar() {
-		btnComecar.addActionListener(new ActionListener() {
+	public static void Botoes() {
 
-			public void actionPerformed(ActionEvent e) {
-				painelLogo.setVisible(false);
-				painelMateria.setVisible(true);
-				btnComecar.setVisible(false);
-				btnRecomecar.setVisible(true);
-			}
-		});
-	}
-	
-	static void acaoRecomecar() {
-		btnRecomecar.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				painelLogo.setVisible(false);
-				painelMateria.setVisible(true);
-			}
-		});
-	}
-	
-	static void acaoVoltarParaLogo() {
 		btnVoltarParaLogo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				painelInicial.setVisible(true);
 				painelMateria.setVisible(false);
-				painelLogo.setVisible(true);
-
+				btnAvancarParaMateria.setVisible(true);
 			}
 		});
-	}
 
-	static void acaoAvancarParaNivel() {
-		btnAvancarParaNivel.addActionListener(new ActionListener() {
+		btnAvancarParaMateria.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				painelMateria.setVisible(false);
-				painelNivel.setVisible(true);
-
+				Materia();
+				painelInicial.setVisible(false);
+				btnAvancarParaMateria.setVisible(false);
 			}
 		});
-	}
-	
-	static void acaoVoltarParaMateria() {
+
 		btnVoltarParaMateria.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				Materia();
 				painelNivel.setVisible(false);
-				painelMateria.setVisible(true);
-
 			}
 		});
-	}
-	
-	static void acaoAvancarParaQuantidade() {
-		btnAvancarParaQuantidadeQuestao.addActionListener(new ActionListener() {
+
+		btnAvancarParaNivel.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				painelNivel.setVisible(false);
-				painelQuantidade.setVisible(true);
-
+				Nivel();
+				painelMateria.setVisible(false);
 			}
 		});
-	}
-	
-	static void acaoVoltarParaNivel() {
+
 		btnVoltarParaNivel.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				Nivel();
 				painelQuantidade.setVisible(false);
-				painelNivel.setVisible(true);
-
 			}
 		});
-	}
-	
-	static void acaoAvancarParaProva() {
+
+		btnAvancarParaQuantidade.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				Quantidade();
+				painelNivel.setVisible(false);
+			}
+		});
+
+		btnVoltarParaQuantidade.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				Quantidade();
+				painelProva.setVisible(false);
+			}
+		});
+
 		btnAvancarParaProva.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				atualisarTelaProva();
+				atualizarTelaProva();
+				Prova();
 				painelQuantidade.setVisible(false);
-				painelNivel.setVisible(false);
-				painelProva.setVisible(true);
 			}
 		});
 	}
-	
-	static void atualisarTelaProva() {
+
+	static void atualizarTelaProva() {
 		try {
 			Statement conexaoComOBanco = conectarComOBancoDeDados();
 			
 			if (rSetPerguntas == null) {
 				rSetPerguntas = obterQuestoes(conexaoComOBanco);
-			}
-			if(rSetPerguntas.next()) {
-				rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
-				
-				textProva.setText(rSetPerguntas.getString(2));
-				
-				JCheckBox[] alternativa = new JCheckBox[5];
-				alternativa[0] = checkBoxRespostaA;
-				alternativa[1] = checkBoxRespostaB;
-				alternativa[2] = checkBoxRespostaC;
-				alternativa[3] = checkBoxRespostaD;
-				alternativa[4] = checkBoxRespostaE;
-				
-				for(int i = 0; i < alternativa.length; i++) {
-					if(rSetRespostas.next()) {
-						alternativa[i].setText(rSetRespostas.getString(1));
-					} else {
-						throw new RuntimeException("Numero de respostas recebidas menor que 5");
-					}
+				if(!rSetPerguntas.next()) {
+					throw new RuntimeException("Nao foi recebida nenhuma questao do banco de dados");
 				}
-			} else {
-				throw new RuntimeException("Numero insuficiente de questões recebidas do banco");
 			}
+			rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
 			
+			textProva.setText(rSetPerguntas.getString(2));
+			
+			JCheckBox[] alternativa = new JCheckBox[5];
+			alternativa[0] = checkBoxRespostaA;
+			alternativa[1] = checkBoxRespostaB;
+			alternativa[2] = checkBoxRespostaC;
+			alternativa[3] = checkBoxRespostaD;
+			alternativa[4] = checkBoxRespostaE;
+			
+			for(int i = 0; i < alternativa.length; i++) {
+				if(rSetRespostas.next()) {
+					alternativa[i].setText(rSetRespostas.getString(1));
+				} else {
+					throw new RuntimeException("Numero de respostas recebidas menor que 5");
+				}
+			}
+			rSetPerguntas.next();
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questões e respostas na tela. Erro: ", e);
 		}
+		
 	}
 	
 	static Statement conectarComOBancoDeDados() {
@@ -454,7 +410,7 @@ public class Tela {
 			String materiasEscolhidas = verificarMateriasEscolhidas(conexaoComOBanco);
 			
 			if(materiasEscolhidas.equals("")) {
-				throw new RuntimeException("Nenhuma materia recebida");
+				throw new RuntimeException("Nenhuma materia escolhida");
 			} else {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE " + materiasEscolhidas);
 				return rs;
@@ -480,58 +436,52 @@ public class Tela {
 		try {
 			if(checkBoxCienciasHumanas.isSelected()) {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%'");
-				if(rs.next()) {
-					String id = rs.getString(1);
-					materiasEscolhidas = "\"MATERIA\" = " + id + " ";
-				}
+				String id = rs.getString(1);
+				materiasEscolhidas = "\"MATERIA\" = " + id + " ";
 			}
 			if(checkBoxCienciasDaNatureza.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%'");
-				if(rs.next()) {
-					if(materiasEscolhidas.equals("") == false) {
-						materiasEscolhidas = materiasEscolhidas + "OR ";
-					}
-					String id = rs.getString(1);
-					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				if(materiasEscolhidas.equals("") == false) {
+					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%'");
+				String id = rs.getString(1);
+				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
 			if(checkBoxLinguagensECodigos.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%'");
-				if(rs.next()) {
-					if(materiasEscolhidas.equals("") == false) {
-						materiasEscolhidas = materiasEscolhidas + "OR ";
-					}
-					String id = rs.getString(1);
-					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				if(materiasEscolhidas.equals("") == false) {
+					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%'");
+				String id = rs.getString(1);
+				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
 			if(checkBoxMatematica.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%'");
-				if(rs.next()) {
-					if(materiasEscolhidas.equals("") == false) {
-						materiasEscolhidas = materiasEscolhidas + "OR ";
-					}
-					String id = rs.getString(1);
-					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
+				if(materiasEscolhidas.equals("") == false) {
+					materiasEscolhidas = materiasEscolhidas + "OR ";
 				}
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%'");
+				rs.next();
+				String id = rs.getString(1);
+				materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 			}
 			
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao procurar materias. Verifique o banco de dados ", e);
+			throw new RuntimeException("Falha ao procurar materias. Erro: ", e);
 		}
 		return materiasEscolhidas;
 	}
 
 	public static void main(String[] args) {
-		new Tela();
+		new Enem();
 	}
 
 }
 
 class ConexaoBd {
+	
+	private static final String URL_BANCO_DE_DADOS = "jdbc:postgresql://localhost/Enem";
 	private static final String LOGIN_BANCO_DE_DADOS = "postgres";
 	private static final String SENHA_BANCO_DE_DADOS = "123";
-	private static final String URL_BANCO_DE_DADOS = "jdbc:postgresql://localhost/testeenem";
 	
 	private Connection conexaoBd;
 	
@@ -554,5 +504,5 @@ class ConexaoBd {
 			throw new RuntimeException("Falha ao desconectar o banco. Erro: ", e);
 		}
 	}
-	
+
 }
