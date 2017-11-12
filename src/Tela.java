@@ -159,8 +159,6 @@ public class Enem {
 
 		fTela.add(painelMateria);
 
-		Botoes();
-
 	}
 
 	public static void Nivel() {
@@ -198,9 +196,6 @@ public class Enem {
 		// Configurações do Frame
 
 		fTela.add(painelNivel);
-
-		Botoes();
-
 	}
 
 	public static void Quantidade() {
@@ -250,9 +245,6 @@ public class Enem {
 		// Configurações do Frame
 
 		fTela.add(painelQuantidade);
-
-		Botoes();
-
 	}
 
 	public static void Prova() {
@@ -283,9 +275,6 @@ public class Enem {
 		// Configurações do Frame
 
 		fTela.add(painelProva);
-		
-		Botoes();
-
 	}
 
 	public static void Botoes() {
@@ -480,7 +469,6 @@ public class Enem {
 	public static void main(String[] args) {
 		new Enem();
 	}
-
 }
 
 class ConexaoBd {
