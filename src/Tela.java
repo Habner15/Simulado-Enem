@@ -471,6 +471,34 @@ public class Enem {
 	}
 }
 
+class Questao {
+	String textoQuestao;
+	Resposta respostas;
+	Questao anterior;
+	Questao proxima;
+	
+	public void inserirQuestao(Questao head, String textoDaQuestao, String[] textoRespostas) {
+		if(head == null) {
+			throw new RuntimeException("Falha ao adicionar Questao. Head == null");
+		} else {
+			if(head.proxima == null) {
+				head.proxima = new Questao();
+				head.proxima.textoQuestao = textoDaQuestao;
+				head.proxima.anterior = head;
+				//respostas aqui
+			} else {
+				inserirQuestao(head.proxima, textoDaQuestao, textoRespostas);
+			}
+		}
+	}
+}
+
+class Resposta {
+	String textoResposta;
+	Resposta proxima;
+	boolean correta;
+}
+
 class ConexaoBd {
 	
 	private static final String URL_BANCO_DE_DADOS = "jdbc:postgresql://localhost/Enem";
