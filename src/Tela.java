@@ -17,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 public class Enem {
 
@@ -471,25 +472,115 @@ public class Enem {
 	}
 }
 
-class Questao {
+class Pergunta {
 	String textoQuestao;
 	Resposta respostas;
-	Questao anterior;
-	Questao proxima;
+	Pergunta anterior;
+	Pergunta proxima;
 	
-	public void inserirQuestao(Questao head, String textoDaQuestao, String[] textoRespostas) {
+	public Pergunta() {
+		 //               //
+		//  ( ⚆ _ ⚆ )   //
+	}
+	
+	public Pergunta(String textoDaQuestao, String[] textoRespostas) {
+		textoQuestao = textoDaQuestao;
+		inserirRespostas(textoRespostas);
+	}
+	
+	public void inserirQuestao(Pergunta head, String textoDaQuestao, String[] textoRespostas) {
 		if(head == null) {
 			throw new RuntimeException("Falha ao adicionar Questao. Head == null");
 		} else {
 			if(head.proxima == null) {
-				head.proxima = new Questao();
+				head.proxima = new Pergunta();
 				head.proxima.textoQuestao = textoDaQuestao;
 				head.proxima.anterior = head;
 				head.proxima.inserirRespostas(textoRespostas);
+				head.proxima.embaralharRespostas();
 			} else {
 				inserirQuestao(head.proxima, textoDaQuestao, textoRespostas);
 			}
 		}
+	}
+	
+	public static Pergunta embaralharPerguntas(Pergunta head) {
+		Pergunta misturadasHead = null;
+		
+		Pergunta[] arrayPerguntas = head.perguntasParaArray(head);
+		boolean[] tabAux = new boolean[arrayPerguntas.length];
+		Random aleatorio = new Random();
+		
+		for(int i = 0; i < arrayPerguntas.length; i++) {
+			int numAleatorio = aleatorio.nextInt(tabAux.length - 1);
+			while(true) {
+				if(tabAux[numAleatorio]) {
+					if(numAleatorio == tabAux.length - 1) {
+						numAleatorio = 0;
+					} else {
+						numAleatorio++;
+					}
+				} else {
+					if(misturadasHead == null) {
+						misturadasHead = new Pergunta();
+						String[] textoRespostas = arrayPerguntas[numAleatorio].respostasParaArray();
+						
+						misturadasHead.textoQuestao = arrayPerguntas[numAleatorio].textoQuestao;
+						misturadasHead.inserirRespostas(textoRespostas);
+						misturadasHead.embaralharRespostas();
+					} else {
+						String[] textoRespostas = arrayPerguntas[numAleatorio].respostasParaArray();
+						misturadasHead.inserirQuestao(misturadasHead, arrayPerguntas[numAleatorio].textoQuestao, textoRespostas);
+					}
+					tabAux[numAleatorio] = true;
+					break;
+				}
+			}
+		}		
+		return misturadasHead;
+	}
+	
+	public void embaralharRespostas() {		
+		Resposta misturadasHead = null;
+		Resposta misturadasAtual = null;
+		Random aleatorio = new Random();
+		int quantRespostas = contarRespostas();
+		
+		while(respostas != null) {
+			int numAleatorio = aleatorio.nextInt(quantRespostas - 1);
+			Resposta atual = respostas;
+			for(int i = 0; i < numAleatorio; i++) {
+				if(atual.proxima == null) {
+					atual = respostas;
+					if(i == numAleatorio - 1) {
+						respostas = respostas.proxima;
+					}
+				} else {
+					if(i == numAleatorio - 1) {
+						if(atual.proxima.proxima == null) {
+							Resposta tmp = atual;
+							atual = atual.proxima;
+							tmp.proxima = null;
+						} else {
+							Resposta tmp = atual;
+							atual = atual.proxima;
+							tmp.proxima = atual.proxima;
+						}
+					} else {
+						atual = atual.proxima;
+					}
+					
+				}
+			}
+			if(misturadasHead == null) {
+				misturadasHead = new Resposta(atual.textoResposta, atual.correta);
+				misturadasAtual = misturadasHead;
+			} else {
+				misturadasAtual.proxima = new Resposta(atual.textoResposta, atual.correta);
+				misturadasAtual = misturadasAtual.proxima;
+			}
+		}
+		respostas = misturadasHead;
 	}
 	
 	private void inserirRespostas(String[] textoRespostas) {
@@ -503,6 +594,58 @@ class Questao {
 				respostaAtual = respostaAtual.proxima;
 			}
 		}
+	}
+	
+	public int contarPerguntas(Pergunta head) {
+		int count = 0;
+		Pergunta atual = head;
+		
+		while(atual != null) {
+			atual = atual.proxima;
+			count++;
+		}
+		return count;
+	}
+	
+	private Pergunta[] perguntasParaArray(Pergunta head) {
+		int quantDePerguntas = contarPerguntas(head);
+		Pergunta[] arrayPerguntas = new Pergunta[quantDePerguntas];
+		Pergunta perguntaAtual = head;
+		
+		for(int i = 0; i < arrayPerguntas.length; i++) {
+			arrayPerguntas[i] = perguntaAtual;
+			perguntaAtual = perguntaAtual.proxima;
+		}
+		
+		return arrayPerguntas;
+	}
+	
+	private String[] respostasParaArray() {
+		String[] arrayRespostas = new String[contarRespostas()];
+		Resposta atual = respostas;
+		int count = 1;
+		
+		while(count < arrayRespostas.length) {
+			if(atual.correta) {
+				arrayRespostas[0] = atual.textoResposta;
+			} else {
+				arrayRespostas[count] = atual.textoResposta;
+				count++;
+			}
+			atual = atual.proxima;
+		}
+		return arrayRespostas;
+	}
+	
+	private int contarRespostas() {
+		int count = 0;
+		Resposta atual = respostas;
+		
+		while(atual != null) {
+			atual = atual.proxima;
+			count++;
+		}
+		return count;
 	}
 }
 
