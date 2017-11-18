@@ -78,8 +78,8 @@ public class Enem {
 	static int tamanho;
 	static double botaoLargura;
 	
-	static ResultSet rSetPerguntas;
-	static ResultSet rSetRespostas;
+	static Pergunta listaDePerguntas;
+	static Pergunta perguntaAtual;	
 
 	public Enem() {
 
@@ -349,37 +349,56 @@ public class Enem {
 	}
 
 	static void atualizarTelaProva() {
+		if(listaDePerguntas == null) {
+			prepararPerguntas();
+			perguntaAtual = listaDePerguntas;
+		} else {
+			perguntaAtual = perguntaAtual.proxima;
+		}
+		textProva.setText(perguntaAtual.textoQuestao);
+		
+		JCheckBox[] alternativa = new JCheckBox[5];
+		alternativa[0] = checkBoxRespostaA;
+		alternativa[1] = checkBoxRespostaB;
+		alternativa[2] = checkBoxRespostaC;
+		alternativa[3] = checkBoxRespostaD;
+		alternativa[4] = checkBoxRespostaE;
+		
+		Resposta respostaAtual = perguntaAtual.respostas;
+		
+		for(int i = 0; i < alternativa.length; i++) {
+			alternativa[i].setText(respostaAtual.textoResposta);
+			respostaAtual = respostaAtual.proxima;
+		}
+	}
+	
+	static void prepararPerguntas() {
 		try {
-			Statement conexaoComOBanco = conectarComOBancoDeDados();
-			
-			if (rSetPerguntas == null) {
-				rSetPerguntas = obterQuestoes(conexaoComOBanco);
-			}
-			if(rSetPerguntas.next()) {
-				rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
+			Statement conexaoComOBanco = conectarComOBancoDeDados();			
+			ResultSet rSetPerguntas = obterQuestoes(conexaoComOBanco);
+
+			while(rSetPerguntas.next()) {
+				ResultSet rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
+				String[] respostas = new String[5];
 				
-				textProva.setText(rSetPerguntas.getString(2));
-				
-				JCheckBox[] alternativa = new JCheckBox[5];
-				alternativa[0] = checkBoxRespostaA;
-				alternativa[1] = checkBoxRespostaB;
-				alternativa[2] = checkBoxRespostaC;
-				alternativa[3] = checkBoxRespostaD;
-				alternativa[4] = checkBoxRespostaE;
-				
-				for(int i = 0; i < alternativa.length; i++) {
+				for(int i = 0; i < respostas.length; i++) {
 					if(rSetRespostas.next()) {
-						alternativa[i].setText(rSetRespostas.getString(1));
+						respostas[i] = rSetRespostas.getString(1);
 					} else {
 						throw new RuntimeException("Numero de respostas recebidas menor que 5");
 					}
 				}
-			} else {
-				throw new RuntimeException("Numero insuficiente de questões recebidas do banco");
+				if(listaDePerguntas == null) {
+					listaDePerguntas = new Pergunta();
+					listaDePerguntas.textoQuestao = rSetPerguntas.getString(2);
+					listaDePerguntas.inserirRespostas(respostas);
+				} else {
+					listaDePerguntas.inserirQuestao(listaDePerguntas, rSetPerguntas.getString(2), respostas);
+				}				
 			}
-			
+			listaDePerguntas = Pergunta.embaralharPerguntas(listaDePerguntas);
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao carregar questões e respostas na tela. Erro: ", e);
+			throw new RuntimeException("Falha ao preparar perguntas e respostas", e);
 		}
 	}
 	
@@ -390,7 +409,7 @@ public class Enem {
 			
 			return st;
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao solicitar conexão com o banco de dados. Erro: ", e);
+			throw new RuntimeException("Falha ao solicitar conexão com o banco de dados", e);
 		}
 		
 	}
@@ -512,7 +531,12 @@ class Pergunta {
 		Random aleatorio = new Random();
 		
 		for(int i = 0; i < arrayPerguntas.length; i++) {
-			int numAleatorio = aleatorio.nextInt(tabAux.length - 1);
+			int numAleatorio;
+			if(tabAux.length == 1) {
+				numAleatorio = aleatorio.nextInt(tabAux.length);
+			} else {
+				numAleatorio = aleatorio.nextInt(tabAux.length - 1);
+			}
 			while(true) {
 				if(tabAux[numAleatorio]) {
 					if(numAleatorio == tabAux.length - 1) {
@@ -547,7 +571,12 @@ class Pergunta {
 		int quantRespostas = contarRespostas();
 		
 		while(respostas != null) {
-			int numAleatorio = aleatorio.nextInt(quantRespostas - 1);
+			int numAleatorio;
+			if(quantRespostas == 1) {
+				numAleatorio = aleatorio.nextInt(quantRespostas);
+			} else {
+				numAleatorio = aleatorio.nextInt(quantRespostas - 1);
+			}
 			Resposta atual = respostas;
 			for(int i = 0; i < numAleatorio; i++) {
 				if(atual.proxima == null) {
@@ -583,16 +612,13 @@ class Pergunta {
 		respostas = misturadasHead;
 	}
 	
-	private void inserirRespostas(String[] textoRespostas) {
-		Resposta respostaAtual = null;
-		for(int i = 0; i < textoRespostas.length; i++) {
-			if(respostas == null) {
-				respostas = new Resposta(textoRespostas[i], true);
-				respostaAtual = respostas;
-			} else {
-				respostaAtual.proxima = new Resposta(textoRespostas[i], false);
-				respostaAtual = respostaAtual.proxima;
-			}
+	public void inserirRespostas(String[] textoRespostas) {
+		respostas = new Resposta(textoRespostas[0], true);
+		Resposta respostaAtual = respostas;		
+		
+		for(int i = 1; i < textoRespostas.length; i++) {
+			respostaAtual.proxima = new Resposta(textoRespostas[i], false);
+			respostaAtual = respostaAtual.proxima;
 		}
 	}
 	
