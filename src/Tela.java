@@ -79,7 +79,8 @@ public class Enem {
 	static double botaoLargura;
 	
 	static Pergunta listaDePerguntas;
-	static Pergunta perguntaAtual;	
+	static Pergunta perguntaAtual;
+	
 
 	public Enem() {
 
@@ -444,14 +445,14 @@ public class Enem {
 
 		try {
 			if(checkBoxCienciasHumanas.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%'");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%' OR m.\"NOME\" LIKE '%HUMANAS%'");
 				if(rs.next()) {
 					String id = rs.getString(1);
 					materiasEscolhidas = "\"MATERIA\" = " + id + " ";
 				}
 			}
 			if(checkBoxCienciasDaNatureza.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%'");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%' OR m.\"NOME\" LIKE '%NATUREZA%'");
 				if(rs.next()) {
 					if(materiasEscolhidas.equals("") == false) {
 						materiasEscolhidas = materiasEscolhidas + "OR ";
@@ -461,7 +462,7 @@ public class Enem {
 				}
 			}
 			if(checkBoxLinguagensECodigos.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%'");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%' OR m.\"NOME\" LIKE '%LINGUAGENS%'");
 				if(rs.next()) {
 					if(materiasEscolhidas.equals("") == false) {
 						materiasEscolhidas = materiasEscolhidas + "OR ";
@@ -471,7 +472,7 @@ public class Enem {
 				}
 			}
 			if(checkBoxMatematica.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%'");
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%' OR m.\"NOME\" LIKE '%MATEMATICA%'");
 				if(rs.next()) {
 					if(materiasEscolhidas.equals("") == false) {
 						materiasEscolhidas = materiasEscolhidas + "OR ";
@@ -528,22 +529,12 @@ class Pergunta {
 		
 		Pergunta[] arrayPerguntas = head.perguntasParaArray(head);
 		boolean[] tabAux = new boolean[arrayPerguntas.length];
-		Random aleatorio = new Random();
 		
 		for(int i = 0; i < arrayPerguntas.length; i++) {
-			int numAleatorio;
-			if(tabAux.length == 1) {
-				numAleatorio = aleatorio.nextInt(tabAux.length);
-			} else {
-				numAleatorio = aleatorio.nextInt(tabAux.length - 1);
-			}
+			int numAleatorio = aleatorio(tabAux.length);
 			while(true) {
 				if(tabAux[numAleatorio]) {
-					if(numAleatorio == tabAux.length - 1) {
-						numAleatorio = 0;
-					} else {
-						numAleatorio++;
-					}
+					numAleatorio = funcaoQueEuNaoSeiComoChamar(tabAux.length, numAleatorio);
 				} else {
 					if(misturadasHead == null) {
 						misturadasHead = new Pergunta();
@@ -566,47 +557,31 @@ class Pergunta {
 	
 	public void embaralharRespostas() {		
 		Resposta misturadasHead = null;
-		Resposta misturadasAtual = null;
-		Random aleatorio = new Random();
 		int quantRespostas = contarRespostas();
-		
-		while(respostas != null) {
-			int numAleatorio;
-			if(quantRespostas == 1) {
-				numAleatorio = aleatorio.nextInt(quantRespostas);
-			} else {
-				numAleatorio = aleatorio.nextInt(quantRespostas - 1);
-			}
-			Resposta atual = respostas;
-			for(int i = 0; i < numAleatorio; i++) {
-				if(atual.proxima == null) {
-					atual = respostas;
-					if(i == numAleatorio - 1) {
-						respostas = respostas.proxima;
-					}
+		Resposta[] arrayResposta = new Resposta[quantRespostas];
+		boolean[] tabAux = new boolean[quantRespostas];
+		Resposta atual = respostas;
+
+		for(int i = 0; i < arrayResposta.length; i++) {
+			arrayResposta[i] = atual;
+			atual = atual.proxima;
+		}
+
+		for(int i = 0; i <= quantRespostas; i++) {
+			int numAleatorio = aleatorio(quantRespostas);
+			while(true) {
+				if(tabAux[numAleatorio]) {
+					numAleatorio = funcaoQueEuNaoSeiComoChamar(tabAux.length, numAleatorio);
 				} else {
-					if(i == numAleatorio - 1) {
-						if(atual.proxima.proxima == null) {
-							Resposta tmp = atual;
-							atual = atual.proxima;
-							tmp.proxima = null;
-						} else {
-							Resposta tmp = atual;
-							atual = atual.proxima;
-							tmp.proxima = atual.proxima;
-						}
+					if(misturadasHead == null) {
+						misturadasHead = new Resposta(arrayResposta[numAleatorio].textoResposta, arrayResposta[numAleatorio].correta);
+						atual = misturadasHead;
 					} else {
+						atual.proxima = new Resposta(arrayResposta[numAleatorio].textoResposta, arrayResposta[numAleatorio].correta);
 						atual = atual.proxima;
 					}
-					
+					break;
 				}
-			}
-			if(misturadasHead == null) {
-				misturadasHead = new Resposta(atual.textoResposta, atual.correta);
-				misturadasAtual = misturadasHead;
-			} else {
-				misturadasAtual.proxima = new Resposta(atual.textoResposta, atual.correta);
-				misturadasAtual = misturadasAtual.proxima;
 			}
 		}
 		respostas = misturadasHead;
@@ -656,8 +631,8 @@ class Pergunta {
 				arrayRespostas[0] = atual.textoResposta;
 			} else {
 				arrayRespostas[count] = atual.textoResposta;
-				count++;
 			}
+			count++;
 			atual = atual.proxima;
 		}
 		return arrayRespostas;
@@ -672,6 +647,26 @@ class Pergunta {
 			count++;
 		}
 		return count;
+	}
+	
+	private static int aleatorio(int limite) {
+		Random aleatorio = new Random();
+		int numAleatorio;
+		
+		if(limite == 1) {
+			numAleatorio = aleatorio.nextInt(limite);
+		} else {
+			numAleatorio = aleatorio.nextInt(limite - 1);
+		}
+		return numAleatorio;
+	}
+	
+	private static int funcaoQueEuNaoSeiComoChamar(int tamanho, int atual) {
+		if(atual == tamanho - 1) {
+			return 0;
+		} else {
+			return atual + 1;
+		}
 	}
 }
 
