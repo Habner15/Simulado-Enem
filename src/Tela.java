@@ -485,9 +485,22 @@ class Questao {
 				head.proxima = new Questao();
 				head.proxima.textoQuestao = textoDaQuestao;
 				head.proxima.anterior = head;
-				//respostas aqui
+				head.proxima.inserirRespostas(textoRespostas);
 			} else {
 				inserirQuestao(head.proxima, textoDaQuestao, textoRespostas);
+			}
+		}
+	}
+	
+	private void inserirRespostas(String[] textoRespostas) {
+		Resposta respostaAtual = null;
+		for(int i = 0; i < textoRespostas.length; i++) {
+			if(respostas == null) {
+				respostas = new Resposta(textoRespostas[i], true);
+				respostaAtual = respostas;
+			} else {
+				respostaAtual.proxima = new Resposta(textoRespostas[i], false);
+				respostaAtual = respostaAtual.proxima;
 			}
 		}
 	}
@@ -497,6 +510,11 @@ class Resposta {
 	String textoResposta;
 	Resposta proxima;
 	boolean correta;
+	
+	public Resposta(String textoDaResposta, boolean respostaCerta) {
+		textoResposta = textoDaResposta;
+		correta = respostaCerta;
+	}
 }
 
 class ConexaoBd {
