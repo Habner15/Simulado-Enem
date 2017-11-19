@@ -517,7 +517,6 @@ class Pergunta {
 				head.proxima.textoQuestao = textoDaQuestao;
 				head.proxima.anterior = head;
 				head.proxima.inserirRespostas(textoRespostas);
-				head.proxima.embaralharRespostas();
 			} else {
 				inserirQuestao(head.proxima, textoDaQuestao, textoRespostas);
 			}
@@ -567,7 +566,7 @@ class Pergunta {
 			atual = atual.proxima;
 		}
 
-		for(int i = 0; i <= quantRespostas; i++) {
+		for(int i = 0; i < quantRespostas; i++) {
 			int numAleatorio = aleatorio(quantRespostas);
 			while(true) {
 				if(tabAux[numAleatorio]) {
@@ -580,6 +579,7 @@ class Pergunta {
 						atual.proxima = new Resposta(arrayResposta[numAleatorio].textoResposta, arrayResposta[numAleatorio].correta);
 						atual = atual.proxima;
 					}
+					tabAux[numAleatorio] = true;
 					break;
 				}
 			}
@@ -624,16 +624,19 @@ class Pergunta {
 	private String[] respostasParaArray() {
 		String[] arrayRespostas = new String[contarRespostas()];
 		Resposta atual = respostas;
-		int count = 1;
-		
-		while(count < arrayRespostas.length) {
+		int correta = 0;
+
+		for(int i = 0; i < arrayRespostas.length; i++) {
 			if(atual.correta) {
-				arrayRespostas[0] = atual.textoResposta;
-			} else {
-				arrayRespostas[count] = atual.textoResposta;
-			}
-			count++;
+				correta = i;
+			} 
+			arrayRespostas[i] = atual.textoResposta;
 			atual = atual.proxima;
+		}
+		if(correta != 0) {
+			String tmp = arrayRespostas[0];
+			arrayRespostas[0] = arrayRespostas[correta];
+			arrayRespostas[correta] = tmp;
 		}
 		return arrayRespostas;
 	}
