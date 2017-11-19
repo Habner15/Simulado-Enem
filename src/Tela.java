@@ -381,10 +381,16 @@ public class Enem {
 			while(rSetPerguntas.next()) {
 				ResultSet rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
 				String[] respostas = new String[5];
+				int count = 1;
 				
 				for(int i = 0; i < respostas.length; i++) {
 					if(rSetRespostas.next()) {
-						respostas[i] = rSetRespostas.getString(1);
+						if(rSetRespostas.getBoolean(2)) {
+							respostas[0] = rSetRespostas.getString(1);
+						} else {
+							respostas[count] = rSetRespostas.getString(1);
+							count++;
+						}						
 					} else {
 						throw new RuntimeException("Numero de respostas recebidas menor que 5");
 					}
