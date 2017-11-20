@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 
-public class Enem {
+public class Tela {
 
 	static JFrame fTela = new JFrame("Simulado Enem");
 
@@ -31,28 +32,28 @@ public class Enem {
 
 	static JLabel lLogo = new JLabel();
 	static JLabel lEscritaMateria = new JLabel("Selecione as Provas Desejadas:");
-	static JLabel lEscritaNivel = new JLabel("Selecione o NÃ­vel das QuestÃµes:");
-	static JLabel lEscritaQuantidade = new JLabel("Selecione o Quantidade das QuestÃµes:");
+	static JLabel lEscritaNivel = new JLabel("Selecione o Nível das Questões:");
+	static JLabel lEscritaQuantidade = new JLabel("Selecione o Quantidade das Questões:");
 
 	static ImageIcon imageIcone = new ImageIcon("Imagens\\iconeEnem.jpg");
 	static ImageIcon imageLogo = new ImageIcon("Imagens\\logo.png");
 
 	static JButton btnVoltarParaLogo = new JButton("Voltar");
-	static JButton btnAvancarParaMateria = new JButton("Iniciar");
+	static JButton btnIniciar = new JButton("Iniciar");
 	static JButton btnVoltarParaMateria = new JButton("Voltar");
-	static JButton btnAvancarParaNivel = new JButton("AvanÃ§ar");
+	static JButton btnAvancarParaNivel = new JButton("Avançar");
 	static JButton btnVoltarParaNivel = new JButton("Voltar");
-	static JButton btnAvancarParaQuantidade = new JButton("AvanÃ§ar");
+	static JButton btnAvancarParaQuantidade = new JButton("Avançar");
 	static JButton btnVoltarParaQuantidade = new JButton("Voltar");
-	static JButton btnAvancarParaProva = new JButton("AvanÃ§ar");
+	static JButton btnAvancarParaProva = new JButton("Avançar");
 
-	static JCheckBox checkBoxCienciasHumanas = new JCheckBox("CiÃªncias Humanas e suas Tecnologias");
-	static JCheckBox checkBoxCienciasDaNatureza = new JCheckBox("CiÃªncias da Natureza e suas Tecnologias");
-	static JCheckBox checkBoxLinguagensECodigos = new JCheckBox("Linguagens, CÃ³digos e suas Tecnologias");
-	static JCheckBox checkBoxMatematica = new JCheckBox("MatemÃ¡tica e suas Tecnologias");
-	static JCheckBox checkBoxFacil = new JCheckBox("FÃ¡cil");
-	static JCheckBox checkBoxMedio = new JCheckBox("MÃ©dio");
-	static JCheckBox checkBoxDificil = new JCheckBox("DifÃ­cil");
+	static JCheckBox checkBoxCienciasHumanas = new JCheckBox("Ciências Humanas e suas Tecnologias");
+	static JCheckBox checkBoxCienciasDaNatureza = new JCheckBox("Ciências da Natureza e suas Tecnologias");
+	static JCheckBox checkBoxLinguagensECodigos = new JCheckBox("Linguagens, Códigos e suas Tecnologias");
+	static JCheckBox checkBoxMatematica = new JCheckBox("Matemática e suas Tecnologias");
+	static JCheckBox checkBoxFacil = new JCheckBox("Fácil");
+	static JCheckBox checkBoxMedio = new JCheckBox("Médio");
+	static JCheckBox checkBoxDificil = new JCheckBox("Difícil");
 	static JCheckBox checkBoxDez = new JCheckBox("10");
 	static JCheckBox checkBoxVinte = new JCheckBox("20");
 	static JCheckBox checkBoxTrinta = new JCheckBox("30");
@@ -77,14 +78,13 @@ public class Enem {
 	static int botaoAltura;
 	static int tamanho;
 	static double botaoLargura;
-	
+
 	static Pergunta listaDePerguntas;
 	static Pergunta perguntaAtual;
-	
 
-	public Enem() {
+	public Tela() {
 
-		// ConfiguraÃ§Ãµes do Frame
+		// Configurações do Frame
 
 		fTela.add(painelInicial);
 		fTela.setIconImage(imageIcone.getImage());
@@ -95,7 +95,7 @@ public class Enem {
 		fTela.setLayout(null);
 		fTela.setVisible(true);
 
-		// ConfiguraÃ§Ãµes de resoluÃ§Ã£o
+		// Configurações de resolução
 
 		kit = Toolkit.getDefaultToolkit();
 		tamanhoMonitor = kit.getScreenSize();
@@ -105,21 +105,24 @@ public class Enem {
 		botaoAltura = minhaAltura / 15;
 		tamanho = minhaLargura * minhaAltura / 60000;
 
-		// ConfiguraÃ§Ãµes do Painel Logo
+		// Configurações do Painel Logo
 
 		lLogo.setIcon(imageLogo);
 		painelInicial.add(lLogo);
-		painelInicial.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+		painelInicial.setBounds((int) (minhaLargura / 12),
+				(int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
 				(int) (minhaAltura / 1.4));
 		painelInicial.setBackground(Color.WHITE);
 		painelInicial.setVisible(true);
 
-		// BotÃµes
+		// Botões
 
-		fTela.add(btnAvancarParaMateria).setBounds((int) (minhaLargura / 2.69), (int) (minhaAltura / 1.3),
-				(int) botaoLargura, botaoAltura);
+		fTela.add(btnIniciar).setBounds((int) (minhaLargura / 2.69),
+				(int) (minhaAltura / 1.3), (int) botaoLargura, botaoAltura);
+		btnIniciar.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
 
-		Botoes();
+
+		AcaoBotoes();
 
 	}
 
@@ -128,36 +131,60 @@ public class Enem {
 		// Label
 
 		painelMateria.add(lEscritaMateria).setBounds((int) (minhaLargura / 4.1), minhaAltura / 990,
-				(int) (botaoLargura * 3), (int) botaoAltura * 3);
+				(int) (botaoLargura * 3), botaoAltura * 3);
+		lEscritaMateria.setFont(new Font("Arial", Font.BOLD, (int) ((int) tamanho*1.5)));
 		lEscritaMateria.setForeground(new Color(30, 50, 100));
 
 		// CheckBox
 
-		painelMateria.add(checkBoxCienciasHumanas).setBounds((int) (minhaLargura / 3.42), minhaAltura / 5,
+		painelMateria.add(checkBoxCienciasHumanas).setBounds(
+				(int) (minhaLargura / 3.42), minhaAltura / 5,
 				(int) ((int) botaoLargura / 1.01), (tamanho));
-		painelMateria.add(checkBoxCienciasDaNatureza).setBounds((int) (minhaLargura / 3.42), (int) (minhaAltura / 3.75),
+		checkBoxCienciasHumanas.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxCienciasHumanas.setBackground(Color.WHITE);
+
+		painelMateria.add(checkBoxCienciasDaNatureza).setBounds(
+				(int) (minhaLargura / 3.42), (int) (minhaAltura / 3.75),
 				(int) ((int) botaoLargura / 0.95), (tamanho));
-		painelMateria.add(checkBoxLinguagensECodigos).setBounds((int) (minhaLargura / 3.42), minhaAltura / 3,
+		checkBoxCienciasDaNatureza.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxCienciasDaNatureza.setBackground(Color.WHITE);
+
+		painelMateria.add(checkBoxLinguagensECodigos).setBounds(
+				(int) (minhaLargura / 3.42), minhaAltura / 3,
 				(int) ((int) botaoLargura / 0.96), (tamanho));
-		painelMateria.add(checkBoxMatematica).setBounds((int) (minhaLargura / 3.42), (int) (minhaAltura / 2.5),
+		checkBoxLinguagensECodigos.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxLinguagensECodigos.setBackground(Color.WHITE);
+
+		painelMateria.add(checkBoxMatematica).setBounds(
+				(int) (minhaLargura / 3.42), (int) (minhaAltura / 2.5),
 				(int) ((int) botaoLargura / 1.2), (tamanho));
+		checkBoxMatematica.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxMatematica.setBackground(Color.WHITE);
 
-		// BotÃµes
 
-		painelMateria.add(btnVoltarParaLogo).setBounds(minhaLargura / 13, (int) (minhaAltura / 1.8), (int) botaoLargura,
-				botaoAltura);
-		painelMateria.add(btnAvancarParaNivel).setBounds(minhaLargura / 2, (int) (minhaAltura / 1.8),
-				(int) botaoLargura, botaoAltura);
 
-		// ConfiguraÃ§Ãµes do Painel Materia
+		// Botões
 
-		painelMateria.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+		painelMateria.add(btnVoltarParaLogo).setBounds(minhaLargura / 13,
+				(int) (minhaAltura / 1.8), (int) botaoLargura, botaoAltura);
+		btnVoltarParaLogo.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
+		
+		painelMateria.add(btnAvancarParaNivel).setBounds(minhaLargura / 2,
+				(int) (minhaAltura / 1.8), (int) botaoLargura, botaoAltura);
+		btnAvancarParaNivel.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
+
+
+
+		// Configurações do Painel Materia
+
+		painelMateria.setBounds((int) (minhaLargura / 12),
+				(int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
 				(int) (minhaAltura / 1.4));
 		painelMateria.setBackground(Color.WHITE);
 		painelMateria.setLayout(null);
 		painelMateria.setVisible(true);
 
-		// ConfiguraÃ§Ãµes do Frame
+		// Configurações do Frame
 
 		fTela.add(painelMateria);
 
@@ -167,84 +194,153 @@ public class Enem {
 
 		// Label
 
-		painelNivel.add(lEscritaNivel).setBounds((int) (minhaLargura / 4.1), minhaAltura / 990,
-				(int) (botaoLargura * 3), (int) botaoAltura * 3);
+		painelNivel.add(lEscritaNivel).setBounds((int) (minhaLargura / 4.1),
+				minhaAltura / 990, (int) (botaoLargura * 3), botaoAltura * 3);
+		lEscritaNivel.setFont(new Font("Arial", Font.BOLD, (int) ((int) tamanho*1.5)));
 		lEscritaNivel.setForeground(new Color(30, 50, 100));
 
 		// CheckBox
 
-		painelNivel.add(checkBoxFacil).setBounds((int) (minhaLargura / 2.57), (int) (minhaAltura / 4.2),
-				(int) ((int) botaoLargura / 5.5), (tamanho));
-		painelNivel.add(checkBoxMedio).setBounds((int) (minhaLargura / 2.57), (int) (minhaAltura / 3.2),
-				(int) ((int) botaoLargura / 4.5), (tamanho));
-		painelNivel.add(checkBoxDificil).setBounds((int) (minhaLargura / 2.57), (int) (minhaAltura / 2.6),
-				(int) ((int) botaoLargura / 4.5), (tamanho));
+		painelNivel.add(checkBoxFacil).setBounds((int) (minhaLargura / 2.57),
+				(int) (minhaAltura / 4.2), (int) ((int) botaoLargura / 5.5),
+				(tamanho));
+		checkBoxFacil.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxFacil.setBackground(Color.WHITE);
 
-		// BotÃµes
 
-		painelNivel.add(btnVoltarParaMateria).setBounds(minhaLargura / 13, (int) (minhaAltura / 1.8),
-				(int) botaoLargura, botaoAltura);
-		painelNivel.add(btnAvancarParaQuantidade).setBounds(minhaLargura / 2, (int) (minhaAltura / 1.8),
-				(int) botaoLargura, botaoAltura);
+		painelNivel.add(checkBoxMedio).setBounds((int) (minhaLargura / 2.57),
+				(int) (minhaAltura / 3.2), (int) ((int) botaoLargura / 4.5),
+				(tamanho));
+		checkBoxMedio.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxMedio.setBackground(Color.WHITE);
 
-		// ConfiguraÃ§Ãµes Painel Nivel
 
-		painelNivel.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+		painelNivel.add(checkBoxDificil).setBounds((int) (minhaLargura / 2.57),
+				(int) (minhaAltura / 2.6), (int) ((int) botaoLargura / 4.5),
+				(tamanho));
+		checkBoxDificil.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxDificil.setBackground(Color.WHITE);
+
+
+
+		// Botões
+
+		painelNivel.add(btnVoltarParaMateria).setBounds(minhaLargura / 13,
+				(int) (minhaAltura / 1.8), (int) botaoLargura, botaoAltura);
+		btnVoltarParaMateria.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
+
+		painelNivel.add(btnAvancarParaQuantidade).setBounds(minhaLargura / 2,
+				(int) (minhaAltura / 1.8), (int) botaoLargura, botaoAltura);
+		btnAvancarParaQuantidade.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
+
+
+		// Configurações Painel Nivel
+
+		painelNivel.setBounds((int) (minhaLargura / 12),
+				(int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
 				(int) (minhaAltura / 1.4));
 		painelNivel.setBackground(Color.WHITE);
 		painelNivel.setLayout(null);
 		painelNivel.setVisible(true);
 
-		// ConfiguraÃ§Ãµes do Frame
+		// Configurações do Frame
 
 		fTela.add(painelNivel);
 	}
 
 	public static void Quantidade() {
 
-		// Label
+		// Label Escrita
 
-		painelQuantidade.add(lEscritaQuantidade).setBounds((int) (minhaLargura / 4.68), minhaAltura / 990,
+		painelQuantidade.add(lEscritaQuantidade).setBounds(
+				(int) (minhaLargura / 4.68), minhaAltura / 990,
 				(int) (botaoLargura * 3), (int) botaoAltura * 3);
+		lEscritaQuantidade.setFont(new Font("Arial", Font.BOLD, (int) ((int) tamanho*1.5)));
 		lEscritaQuantidade.setForeground(new Color(30, 50, 100));
 
-		// CheckBox
+		// CheckBox Quantidade
 
-		painelQuantidade.add(checkBoxDez).setBounds((int) (minhaLargura / 3.3), (int) (minhaAltura / 4.7),
+		painelQuantidade.add(checkBoxDez).setBounds((int) (minhaLargura / 3.3),
+				(int) (minhaAltura / 4.7), ((int) botaoLargura / 8), (tamanho));
+		checkBoxDez.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxDez.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxVinte).setBounds(
+				(int) (minhaLargura / 3.3), (int) (minhaAltura / 3.2),
 				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxVinte).setBounds((int) (minhaLargura / 3.3), (int) (minhaAltura / 3.2),
+		checkBoxVinte.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxVinte.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxTrinta).setBounds(
+				(int) (minhaLargura / 3.3), (int) (minhaAltura / 2.44),
 				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxTrinta).setBounds((int) (minhaLargura / 3.3), (int) (minhaAltura / 2.44),
+		checkBoxTrinta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxTrinta.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxQuarenta).setBounds(
+				(int) (minhaLargura / 2.49), (int) (minhaAltura / 4.7),
 				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxQuarenta).setBounds((int) (minhaLargura / 2.49), (int) (minhaAltura / 4.7),
+		checkBoxQuarenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxQuarenta.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxCinquenta).setBounds(
+				(int) (minhaLargura / 2.49), (int) (minhaAltura / 3.2),
 				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxCinquenta).setBounds((int) (minhaLargura / 2.49), (int) (minhaAltura / 3.2),
+		checkBoxCinquenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxCinquenta.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxSessenta).setBounds(
+				(int) (minhaLargura / 2.49), (int) (minhaAltura / 2.44),
 				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxSessenta).setBounds((int) (minhaLargura / 2.49), (int) (minhaAltura / 2.44),
-				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxSetenta).setBounds((minhaLargura / 2), (int) (minhaAltura / 4.7),
-				((int) botaoLargura / 8), (tamanho));
-		painelQuantidade.add(checkBoxOitenta).setBounds((minhaLargura / 2), (int) (minhaAltura / 3.2),
-				((int) botaoLargura / 8), (tamanho));
+		checkBoxSessenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxSessenta.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxSetenta).setBounds((minhaLargura / 2),
+				(int) (minhaAltura / 4.7), ((int) botaoLargura / 8), (tamanho));
+		checkBoxSetenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxSetenta.setBackground(Color.WHITE);
+
+
+		painelQuantidade.add(checkBoxOitenta).setBounds((minhaLargura / 2),
+				(int) (minhaAltura / 3.2), ((int) botaoLargura / 8), (tamanho));
+		checkBoxOitenta.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxOitenta.setBackground(Color.WHITE);
+
+
 		painelQuantidade.add(checkBoxNoventa).setBounds((minhaLargura / 2), (int) (minhaAltura / 2.44),
-				((int) botaoLargura / 8), (tamanho));
+						((int) botaoLargura / 8), (tamanho));
+		checkBoxNoventa.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.1)));
+		checkBoxNoventa.setBackground(Color.WHITE);
 
-		// BotÃµes
 
-		painelQuantidade.add(btnVoltarParaNivel).setBounds(minhaLargura / 13, (int) (minhaAltura / 1.8),
-				(int) botaoLargura, botaoAltura);
-		painelQuantidade.add(btnAvancarParaProva).setBounds(minhaLargura / 2, (int) (minhaAltura / 1.8),
-				(int) botaoLargura, botaoAltura);
 
-		// ConfiguraÃ§Ãµes Painel Quantidade
+		// Botões
 
-		painelQuantidade.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+		painelQuantidade.add(btnVoltarParaNivel).setBounds(minhaLargura / 13,
+				(int) (minhaAltura / 1.8), (int) botaoLargura, botaoAltura);
+		btnVoltarParaNivel.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
+
+		painelQuantidade.add(btnAvancarParaProva).setBounds(minhaLargura / 2,
+				(int) (minhaAltura / 1.8), (int) botaoLargura, botaoAltura);
+		btnAvancarParaProva.setFont(new Font("Cambria", Font.BOLD, (int) (tamanho/1.2)));
+
+
+		// Configurações Painel Quantidade
+
+		painelQuantidade.setBounds((int) (minhaLargura / 12),
+				(int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
 				(int) (minhaAltura / 1.4));
 		painelQuantidade.setBackground(Color.WHITE);
 		painelQuantidade.setLayout(null);
 		painelQuantidade.setVisible(true);
 
-		// ConfiguraÃ§Ãµes do Frame
+		// Configurações do Frame
 
 		fTela.add(painelQuantidade);
 	}
@@ -252,50 +348,48 @@ public class Enem {
 	public static void Prova() {
 
 		// Label
-		painelProva.add(textProva).setBounds((int) (minhaLargura / 4.68), minhaAltura / 990, (int) (botaoLargura * 3),
+		painelProva.add(textProva).setBounds((int) (minhaLargura / 4.68),
+				minhaAltura / 990, (int) (botaoLargura * 3),
 				(int) botaoAltura * 3);
 		textProva.setEditable(false);
 
-		// CheckBox
-
+		// CheckBox das Provas
 		painelProva.add(checkBoxRespostaA).setBounds(200, 150, 500, 50);
 		painelProva.add(checkBoxRespostaB).setBounds(200, 250, 500, 50);
 		painelProva.add(checkBoxRespostaC).setBounds(200, 350, 500, 50);
 		painelProva.add(checkBoxRespostaD).setBounds(200, 450, 500, 50);
 		painelProva.add(checkBoxRespostaE).setBounds(200, 550, 500, 50);
 
-		// Botoes
+		// Configurações do Painel Prova
 
-		// ConfiguraÃ§Ãµes da Prova
-
-		painelProva.setBounds((int) (minhaLargura / 12), (int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
+		painelProva.setBounds((int) (minhaLargura / 12),
+				(int) (minhaAltura / 30), (int) (minhaLargura / 1.2),
 				(int) (minhaAltura / 1.4));
 		painelProva.setBackground(Color.WHITE);
 		painelProva.setLayout(null);
 		painelProva.setVisible(true);
 
-		// ConfiguraÃ§Ãµes do Frame
-
+		// Configurações do Frame
 		fTela.add(painelProva);
 	}
 
-	public static void Botoes() {
+	public static void AcaoBotoes() {
 
 		btnVoltarParaLogo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				painelInicial.setVisible(true);
 				painelMateria.setVisible(false);
-				btnAvancarParaMateria.setVisible(true);
+				btnIniciar.setVisible(true);
 			}
 		});
 
-		btnAvancarParaMateria.addActionListener(new ActionListener() {
+		btnIniciar.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				Materia();
 				painelInicial.setVisible(false);
-				btnAvancarParaMateria.setVisible(false);
+				btnIniciar.setVisible(false);
 			}
 		});
 
@@ -350,93 +444,99 @@ public class Enem {
 	}
 
 	static void atualizarTelaProva() {
-		if(listaDePerguntas == null) {
+		if (listaDePerguntas == null) {
 			prepararPerguntas();
 			perguntaAtual = listaDePerguntas;
 		} else {
 			perguntaAtual = perguntaAtual.proxima;
 		}
 		textProva.setText(perguntaAtual.textoQuestao);
-		
+
 		JCheckBox[] alternativa = new JCheckBox[5];
 		alternativa[0] = checkBoxRespostaA;
 		alternativa[1] = checkBoxRespostaB;
 		alternativa[2] = checkBoxRespostaC;
 		alternativa[3] = checkBoxRespostaD;
 		alternativa[4] = checkBoxRespostaE;
-		
+
 		Resposta respostaAtual = perguntaAtual.respostas;
-		
-		for(int i = 0; i < alternativa.length; i++) {
+
+		for (int i = 0; i < alternativa.length; i++) {
 			alternativa[i].setText(respostaAtual.textoResposta);
 			respostaAtual = respostaAtual.proxima;
 		}
 	}
-	
+
 	static void prepararPerguntas() {
 		try {
-			Statement conexaoComOBanco = conectarComOBancoDeDados();			
+			Statement conexaoComOBanco = conectarComOBancoDeDados();
 			ResultSet rSetPerguntas = obterQuestoes(conexaoComOBanco);
 
-			while(rSetPerguntas.next()) {
-				ResultSet rSetRespostas = obterRespostas(rSetPerguntas.getString(1), conectarComOBancoDeDados());
+			while (rSetPerguntas.next()) {
+				ResultSet rSetRespostas = obterRespostas(
+						rSetPerguntas.getString(1), conectarComOBancoDeDados());
 				String[] respostas = new String[5];
 				int count = 1;
-				
-				for(int i = 0; i < respostas.length; i++) {
-					if(rSetRespostas.next()) {
-						if(rSetRespostas.getBoolean(2)) {
+
+				for (int i = 0; i < respostas.length; i++) {
+					if (rSetRespostas.next()) {
+						if (rSetRespostas.getBoolean(2)) {
 							respostas[0] = rSetRespostas.getString(1);
 						} else {
 							respostas[count] = rSetRespostas.getString(1);
 							count++;
-						}						
+						}
 					} else {
-						throw new RuntimeException("Numero de respostas recebidas menor que 5");
+						throw new RuntimeException(
+								"Numero de respostas recebidas menor que 5");
 					}
 				}
-				if(listaDePerguntas == null) {
+				if (listaDePerguntas == null) {
 					listaDePerguntas = new Pergunta();
 					listaDePerguntas.textoQuestao = rSetPerguntas.getString(2);
 					listaDePerguntas.inserirRespostas(respostas);
 				} else {
-					listaDePerguntas.inserirQuestao(listaDePerguntas, rSetPerguntas.getString(2), respostas);
-				}				
+					listaDePerguntas.inserirQuestao(listaDePerguntas,
+							rSetPerguntas.getString(2), respostas);
+				}
 			}
 			listaDePerguntas = Pergunta.embaralharPerguntas(listaDePerguntas);
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao preparar perguntas e respostas", e);
+			throw new RuntimeException(
+					"Falha ao preparar perguntas e respostas", e);
 		}
 	}
-	
+
 	static Statement conectarComOBancoDeDados() {
 		try {
 			ConexaoBd conexaoComOBanco = new ConexaoBd();
 			Statement st = conexaoComOBanco.obterConexao().createStatement();
-			
+
 			return st;
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao solicitar conexÃ£o com o banco de dados", e);
+			throw new RuntimeException(
+					"Falha ao solicitar conexÃ£o com o banco de dados", e);
 		}
-		
+
 	}
-	
+
 	static ResultSet obterQuestoes(Statement conexaoComOBanco) {
 		try {
 			String materiasEscolhidas = verificarMateriasEscolhidas(conexaoComOBanco);
-			
-			if(materiasEscolhidas.equals("")) {
+
+			if (materiasEscolhidas.equals("")) {
 				throw new RuntimeException("Nenhuma materia recebida");
 			} else {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE " + materiasEscolhidas);
+				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\", \"QUESTAO\" FROM \"QUESTOES\" WHERE "
+								+ materiasEscolhidas);
 				return rs;
 			}
-			
+
 		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao carregar questÃ£o. Erro: ", e);
 		}
 	}
-	
+
 	static ResultSet obterRespostas(String idQuestao, Statement conexaoComOBanco) {
 		try {
 			ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"RESPOSTA\", \"CORRETA\" FROM \"RESPOSTAS\" WHERE \"QUESTAO\" = " + idQuestao);
@@ -445,56 +545,59 @@ public class Enem {
 			throw new RuntimeException("Falha ao carregar resposta. Erro: ", e);
 		}
 	}
-	
+
 	static String verificarMateriasEscolhidas(Statement conexaoComOBanco) {
 		String materiasEscolhidas = "";
 
 		try {
-			if(checkBoxCienciasHumanas.isSelected()) {
-				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%' OR m.\"NOME\" LIKE '%HUMANAS%'");
-				if(rs.next()) {
+			if (checkBoxCienciasHumanas.isSelected()) {
+				ResultSet rs = conexaoComOBanco
+						.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Humanas%' OR m.\"NOME\" LIKE '%HUMANAS%'");
+				if (rs.next()) {
 					String id = rs.getString(1);
 					materiasEscolhidas = "\"MATERIA\" = " + id + " ";
 				}
 			}
-			if(checkBoxCienciasDaNatureza.isSelected()) {
+			if (checkBoxCienciasDaNatureza.isSelected()) {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Natureza%' OR m.\"NOME\" LIKE '%NATUREZA%'");
-				if(rs.next()) {
-					if(materiasEscolhidas.equals("") == false) {
+				if (rs.next()) {
+					if (materiasEscolhidas.equals("") == false) {
 						materiasEscolhidas = materiasEscolhidas + "OR ";
 					}
 					String id = rs.getString(1);
 					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 				}
 			}
-			if(checkBoxLinguagensECodigos.isSelected()) {
+			if (checkBoxLinguagensECodigos.isSelected()) {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Linguagens%' OR m.\"NOME\" LIKE '%LINGUAGENS%'");
-				if(rs.next()) {
-					if(materiasEscolhidas.equals("") == false) {
+				if (rs.next()) {
+					if (materiasEscolhidas.equals("") == false) {
 						materiasEscolhidas = materiasEscolhidas + "OR ";
 					}
 					String id = rs.getString(1);
 					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 				}
 			}
-			if(checkBoxMatematica.isSelected()) {
+			if (checkBoxMatematica.isSelected()) {
 				ResultSet rs = conexaoComOBanco.executeQuery("SELECT \"ID\" FROM \"MATERIA\" m WHERE m.\"NOME\" LIKE '%Matematica%' OR m.\"NOME\" LIKE '%MATEMATICA%'");
-				if(rs.next()) {
-					if(materiasEscolhidas.equals("") == false) {
+				if (rs.next()) {
+					if (materiasEscolhidas.equals("") == false) {
 						materiasEscolhidas = materiasEscolhidas + "OR ";
 					}
 					String id = rs.getString(1);
 					materiasEscolhidas = materiasEscolhidas + "\"MATERIA\" = " + id + " ";
 				}
 			}
-			
+
 		} catch (SQLException e) {
-			throw new RuntimeException("Falha ao procurar materias. Verifique o banco de dados ", e);
+			throw new RuntimeException(
+					"Falha ao procurar materias. Verifique o banco de dados ", e);
 		}
 		return materiasEscolhidas;
 	}
+
 	public static void main(String[] args) {
-		new Enem();
+		new Tela();
 	}
 }
 
@@ -503,22 +606,24 @@ class Pergunta {
 	Resposta respostas;
 	Pergunta anterior;
 	Pergunta proxima;
-	
+
 	public Pergunta() {
-		 //               //
-		//  ( âš† _ âš† )   //
+		// //
+		// ( âš† _ âš† ) //
 	}
-	
+
 	public Pergunta(String textoDaQuestao, String[] textoRespostas) {
 		textoQuestao = textoDaQuestao;
 		inserirRespostas(textoRespostas);
 	}
-	
-	public void inserirQuestao(Pergunta head, String textoDaQuestao, String[] textoRespostas) {
-		if(head == null) {
-			throw new RuntimeException("Falha ao adicionar Questao. Head == null");
+
+	public void inserirQuestao(Pergunta head, String textoDaQuestao,
+			String[] textoRespostas) {
+		if (head == null) {
+			throw new RuntimeException(
+					"Falha ao adicionar Questao. Head == null");
 		} else {
-			if(head.proxima == null) {
+			if (head.proxima == null) {
 				head.proxima = new Pergunta();
 				head.proxima.textoQuestao = textoDaQuestao;
 				head.proxima.anterior = head;
@@ -528,61 +633,71 @@ class Pergunta {
 			}
 		}
 	}
-	
+
 	public static Pergunta embaralharPerguntas(Pergunta head) {
 		Pergunta misturadasHead = null;
-		
+
 		Pergunta[] arrayPerguntas = head.perguntasParaArray(head);
 		boolean[] tabAux = new boolean[arrayPerguntas.length];
-		
-		for(int i = 0; i < arrayPerguntas.length; i++) {
+
+		for (int i = 0; i < arrayPerguntas.length; i++) {
 			int numAleatorio = aleatorio(tabAux.length);
-			while(true) {
-				if(tabAux[numAleatorio]) {
-					numAleatorio = funcaoQueEuNaoSeiComoChamar(tabAux.length, numAleatorio);
+			while (true) {
+				if (tabAux[numAleatorio]) {
+					numAleatorio = funcaoQueEuNaoSeiComoChamar(tabAux.length,
+							numAleatorio);
 				} else {
-					if(misturadasHead == null) {
+					if (misturadasHead == null) {
 						misturadasHead = new Pergunta();
-						String[] textoRespostas = arrayPerguntas[numAleatorio].respostasParaArray();
-						
+						String[] textoRespostas = arrayPerguntas[numAleatorio]
+								.respostasParaArray();
+
 						misturadasHead.textoQuestao = arrayPerguntas[numAleatorio].textoQuestao;
 						misturadasHead.inserirRespostas(textoRespostas);
 						misturadasHead.embaralharRespostas();
 					} else {
-						String[] textoRespostas = arrayPerguntas[numAleatorio].respostasParaArray();
-						misturadasHead.inserirQuestao(misturadasHead, arrayPerguntas[numAleatorio].textoQuestao, textoRespostas);
+						String[] textoRespostas = arrayPerguntas[numAleatorio]
+								.respostasParaArray();
+						misturadasHead.inserirQuestao(misturadasHead,
+								arrayPerguntas[numAleatorio].textoQuestao,
+								textoRespostas);
 					}
 					tabAux[numAleatorio] = true;
 					break;
 				}
 			}
-		}		
+		}
 		return misturadasHead;
 	}
-	
-	public void embaralharRespostas() {		
+
+	public void embaralharRespostas() {
 		Resposta misturadasHead = null;
 		int quantRespostas = contarRespostas();
 		Resposta[] arrayResposta = new Resposta[quantRespostas];
 		boolean[] tabAux = new boolean[quantRespostas];
 		Resposta atual = respostas;
 
-		for(int i = 0; i < arrayResposta.length; i++) {
+		for (int i = 0; i < arrayResposta.length; i++) {
 			arrayResposta[i] = atual;
 			atual = atual.proxima;
 		}
 
-		for(int i = 0; i < quantRespostas; i++) {
+		for (int i = 0; i < quantRespostas; i++) {
 			int numAleatorio = aleatorio(quantRespostas);
-			while(true) {
-				if(tabAux[numAleatorio]) {
-					numAleatorio = funcaoQueEuNaoSeiComoChamar(tabAux.length, numAleatorio);
+			while (true) {
+				if (tabAux[numAleatorio]) {
+					numAleatorio = funcaoQueEuNaoSeiComoChamar(tabAux.length,
+							numAleatorio);
 				} else {
-					if(misturadasHead == null) {
-						misturadasHead = new Resposta(arrayResposta[numAleatorio].textoResposta, arrayResposta[numAleatorio].correta);
+					if (misturadasHead == null) {
+						misturadasHead = new Resposta(
+								arrayResposta[numAleatorio].textoResposta,
+								arrayResposta[numAleatorio].correta);
 						atual = misturadasHead;
 					} else {
-						atual.proxima = new Resposta(arrayResposta[numAleatorio].textoResposta, arrayResposta[numAleatorio].correta);
+						atual.proxima = new Resposta(
+								arrayResposta[numAleatorio].textoResposta,
+								arrayResposta[numAleatorio].correta);
 						atual = atual.proxima;
 					}
 					tabAux[numAleatorio] = true;
@@ -592,86 +707,85 @@ class Pergunta {
 		}
 		respostas = misturadasHead;
 	}
-	
+
 	public void inserirRespostas(String[] textoRespostas) {
 		respostas = new Resposta(textoRespostas[0], true);
-		Resposta respostaAtual = respostas;		
-		
-		for(int i = 1; i < textoRespostas.length; i++) {
+		Resposta respostaAtual = respostas;
+
+		for (int i = 1; i < textoRespostas.length; i++) {
 			respostaAtual.proxima = new Resposta(textoRespostas[i], false);
 			respostaAtual = respostaAtual.proxima;
 		}
 	}
-	
+
 	public int contarPerguntas(Pergunta head) {
 		int count = 0;
 		Pergunta atual = head;
-		
-		while(atual != null) {
+
+		while (atual != null) {
 			atual = atual.proxima;
 			count++;
 		}
 		return count;
 	}
-	
+
 	private Pergunta[] perguntasParaArray(Pergunta head) {
 		int quantDePerguntas = contarPerguntas(head);
 		Pergunta[] arrayPerguntas = new Pergunta[quantDePerguntas];
 		Pergunta perguntaAtual = head;
-		
-		for(int i = 0; i < arrayPerguntas.length; i++) {
+
+		for (int i = 0; i < arrayPerguntas.length; i++) {
 			arrayPerguntas[i] = perguntaAtual;
 			perguntaAtual = perguntaAtual.proxima;
 		}
-		
 		return arrayPerguntas;
 	}
-	
+
 	private String[] respostasParaArray() {
 		String[] arrayRespostas = new String[contarRespostas()];
 		Resposta atual = respostas;
 		int correta = 0;
 
-		for(int i = 0; i < arrayRespostas.length; i++) {
-			if(atual.correta) {
+		for (int i = 0; i < arrayRespostas.length; i++) {
+			if (atual.correta) {
 				correta = i;
-			} 
+			}
 			arrayRespostas[i] = atual.textoResposta;
 			atual = atual.proxima;
 		}
-		if(correta != 0) {
+		if (correta != 0) {
 			String tmp = arrayRespostas[0];
 			arrayRespostas[0] = arrayRespostas[correta];
 			arrayRespostas[correta] = tmp;
 		}
 		return arrayRespostas;
 	}
-	
+
 	private int contarRespostas() {
 		int count = 0;
 		Resposta atual = respostas;
-		
-		while(atual != null) {
+
+		while (atual != null) {
 			atual = atual.proxima;
 			count++;
 		}
 		return count;
 	}
-	
+
 	private static int aleatorio(int limite) {
 		Random aleatorio = new Random();
 		int numAleatorio;
-		
-		if(limite == 1) {
+
+		if (limite == 1) {
 			numAleatorio = aleatorio.nextInt(limite);
 		} else {
 			numAleatorio = aleatorio.nextInt(limite - 1);
 		}
 		return numAleatorio;
 	}
-	
+
 	private static int funcaoQueEuNaoSeiComoChamar(int tamanho, int atual) {
-		if(atual == tamanho - 1) {
+		if (atual == tamanho - 1) {
 			return 0;
 		} else {
 			return atual + 1;
@@ -683,7 +797,7 @@ class Resposta {
 	String textoResposta;
 	Resposta proxima;
 	boolean correta;
-	
+
 	public Resposta(String textoDaResposta, boolean respostaCerta) {
 		textoResposta = textoDaResposta;
 		correta = respostaCerta;
@@ -691,25 +805,26 @@ class Resposta {
 }
 
 class ConexaoBd {
-	
+
 	private static final String URL_BANCO_DE_DADOS = "jdbc:postgresql://localhost/Enem";
 	private static final String LOGIN_BANCO_DE_DADOS = "postgres";
 	private static final String SENHA_BANCO_DE_DADOS = "123";
-	
+
 	private Connection conexaoBd;
-	
+
 	public ConexaoBd() {
 		try {
-			conexaoBd = DriverManager.getConnection(URL_BANCO_DE_DADOS, LOGIN_BANCO_DE_DADOS, SENHA_BANCO_DE_DADOS);
-		} catch (SQLException e){
+			conexaoBd = DriverManager.getConnection(URL_BANCO_DE_DADOS,
+					LOGIN_BANCO_DE_DADOS, SENHA_BANCO_DE_DADOS);
+		} catch (SQLException e) {
 			throw new RuntimeException("Falha ao conectar com o banco. Erro: ", e);
 		}
 	}
-	
+
 	public Connection obterConexao() {
 		return conexaoBd;
 	}
-	
+
 	public void fecharConexao() {
 		try {
 			conexaoBd.close();
@@ -717,5 +832,4 @@ class ConexaoBd {
 			throw new RuntimeException("Falha ao desconectar o banco. Erro: ", e);
 		}
 	}
-
 }
